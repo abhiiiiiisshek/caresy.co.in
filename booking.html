@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Book a Caresy hospital companion for appointments, tests, paperwork, medicine collection, and family updates." />
+    <title>Caresy | Book Assistance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-bar">
+      <a class="brand" href="index.html"><span class="brand-mark">C</span><span>Caresy</span></a>
+      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="trust.html">Trust</a>
+        <a class="nav-quick" href="quick-help.html">Need help today</a>
+        <a class="nav-cta active" href="booking.html">Book for later</a>
+      </nav>
+    </header>
+
+    <main class="page booking-page">
+      <section class="page-hero reveal">
+        <p class="eyebrow">Planned hospital visit</p>
+        <h1>Book a companion for an upcoming appointment.</h1>
+        <p>Use this when the visit is not urgent and you know the hospital, date, time, and patient support needs.</p>
+      </section>
+
+      <section class="section booking-layout">
+        <form class="booking-form material-card reveal" id="bookingForm">
+          <div class="form-section">
+            <span class="form-step">1</span>
+            <h2>Patient details</h2>
+            <div class="form-row">
+              <label>Patient name<input name="patientName" type="text" placeholder="Ramesh Kumar" required /></label>
+              <label>Age<input name="age" type="number" min="1" max="120" placeholder="68" /></label>
+            </div>
+            <div class="form-row">
+              <label>Customer mobile<input name="phone" type="tel" placeholder="+91 98765 43210" required /></label>
+              <label>Emergency contact<input name="emergency" type="tel" placeholder="+91 99887 77665" /></label>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <span class="form-step">2</span>
+            <h2>Appointment details</h2>
+            <div class="form-row">
+              <label>Hospital<input name="hospital" type="text" placeholder="Apollo Hospitals" required /></label>
+              <label>Department<input name="department" type="text" placeholder="Cardiology" /></label>
+            </div>
+            <div class="form-row">
+              <label>Doctor name<input name="doctor" type="text" placeholder="Dr. Mehta" /></label>
+              <label>Appointment date<input name="date" type="date" required /></label>
+            </div>
+            <div class="form-row">
+              <label>Appointment time<input name="time" type="time" required /></label>
+              <label>Preferred language
+                <select name="language">
+                  <option>No preference</option>
+                  <option>Hindi</option>
+                  <option>English</option>
+                  <option>Tamil</option>
+                  <option>Telugu</option>
+                  <option>Kannada</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <span class="form-step">3</span>
+            <h2>Support needed</h2>
+            <label>Service type
+              <select name="service">
+                <option>Hospital Companion</option>
+                <option>Hospital Companion + Pickup</option>
+                <option>Full Day Companion</option>
+                <option>Custom Support</option>
+              </select>
+            </label>
+            <fieldset>
+              <legend>Care needs</legend>
+              <label class="check"><input type="checkbox" name="needs" value="Wheelchair" /> Wheelchair</label>
+              <label class="check"><input type="checkbox" name="needs" value="Walking assistance" /> Walking assistance</label>
+              <label class="check"><input type="checkbox" name="needs" value="Medicine collection" /> Medicine collection</label>
+            </fieldset>
+            <label>Additional notes<textarea name="notes" rows="4" placeholder="Medical notes, address, special requirements"></textarea></label>
+          </div>
+
+          <button class="btn btn-primary full" type="submit">Generate booking request</button>
+        </form>
+
+        <aside class="booking-summary material-card reveal delay-1" aria-live="polite">
+          <p class="eyebrow">Request preview</p>
+          <h2 id="bookingId">Pending assignment</h2>
+          <dl>
+            <div><dt>Status</dt><dd id="bookingStatus">Operations review needed</dd></div>
+            <div><dt>Next step</dt><dd>Appointment and hospital verification</dd></div>
+            <div><dt>Family receives</dt><dd>Companion profile, contact number, and live timeline</dd></div>
+          </dl>
+          <div class="summary-note">
+            <strong>After review</strong>
+            <p>Operations assigns a companion based on distance, experience, language, and preference.</p>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <a class="brand" href="index.html"><span class="brand-mark">C</span><span>Caresy</span></a>
+      <nav><a href="services.html">Services</a><a href="trust.html">Trust</a><a href="quick-help.html">Need help today</a></nav>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>

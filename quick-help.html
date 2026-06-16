@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Request same-day Caresy hospital companion assistance." />
+    <title>Caresy | Need Help Today</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-bar">
+      <a class="brand" href="index.html"><span class="brand-mark">C</span><span>Caresy</span></a>
+      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="trust.html">Trust</a>
+        <a class="nav-quick active" href="quick-help.html">Need help today</a>
+        <a class="nav-cta" href="booking.html">Book for later</a>
+      </nav>
+    </header>
+
+    <main class="page urgent-page">
+      <section class="page-hero reveal">
+        <p class="eyebrow">Same-day support</p>
+        <h1>Need help at the hospital today?</h1>
+        <p>Share the minimum details. Operations can call back, verify feasibility, and guide the next step.</p>
+      </section>
+
+      <section class="section booking-layout">
+        <form class="booking-form urgent-form material-card reveal" id="bookingForm">
+          <div class="form-section">
+            <span class="form-step">1</span>
+            <h2>Contact details</h2>
+            <div class="form-row">
+              <label>Your name<input name="customerName" type="text" placeholder="Ananya Rao" required /></label>
+              <label>Mobile number<input name="phone" type="tel" placeholder="+91 98765 43210" required /></label>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <span class="form-step">2</span>
+            <h2>Where is help needed?</h2>
+            <div class="form-row">
+              <label>Patient name<input name="patientName" type="text" placeholder="Ramesh Kumar" required /></label>
+              <label>Hospital or area<input name="hospital" type="text" placeholder="Fortis, Bannerghatta Road" required /></label>
+            </div>
+            <label>What is happening now?
+              <select name="service">
+                <option>Appointment today</option>
+                <option>Test or scan today</option>
+                <option>Registration or queue support</option>
+                <option>Medicine or document support</option>
+                <option>Need guidance from operations</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="form-section">
+            <span class="form-step">3</span>
+            <h2>Urgency</h2>
+            <fieldset>
+              <legend>When should we call?</legend>
+              <label class="check"><input type="radio" name="needs" value="Call now" checked /> Call now</label>
+              <label class="check"><input type="radio" name="needs" value="Within 30 minutes" /> Within 30 minutes</label>
+              <label class="check"><input type="radio" name="needs" value="Later today" /> Later today</label>
+            </fieldset>
+            <label>Short note<textarea name="notes" rows="4" placeholder="Patient location, appointment time, mobility needs, emergency contact"></textarea></label>
+          </div>
+
+          <button class="btn btn-primary full" type="submit">Request urgent call-back</button>
+        </form>
+
+        <aside class="booking-summary urgent-summary material-card reveal delay-1" aria-live="polite">
+          <p class="eyebrow">Urgent request</p>
+          <h2 id="bookingId">Call-back pending</h2>
+          <dl>
+            <div><dt>Status</dt><dd id="bookingStatus">Operations review needed</dd></div>
+            <div><dt>Best for</dt><dd>Same-day appointments, tests, registration, or queue support</dd></div>
+            <div><dt>Important</dt><dd>Caresy is assistance and coordination, not emergency medical care</dd></div>
+          </dl>
+          <div class="summary-note">
+            <strong>Emergency boundary</strong>
+            <p>If the patient condition is worsening, contact hospital emergency services first.</p>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <a class="brand" href="index.html"><span class="brand-mark">C</span><span>Caresy</span></a>
+      <nav><a href="services.html">Services</a><a href="trust.html">Trust</a><a href="booking.html">Book for later</a></nav>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Caresy operations dashboard concept for bookings, companion assignment, status tracking, and family updates." />
+    <title>Caresy | Operations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-bar">
+      <a class="brand" href="index.html"><span class="brand-mark">C</span><span>Caresy</span></a>
+      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="trust.html">Trust</a>
+        <a class="nav-quick" href="quick-help.html">Need help today</a>
+        <a class="nav-cta" href="booking.html">Book for later</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      <section class="page-hero reveal">
+        <p class="eyebrow">Admin operations</p>
+        <h1>Manual assignment first. Scalable workflow underneath.</h1>
+        <p>The MVP keeps operations human-led while making statuses, verification, documents, and updates structured.</p>
+      </section>
+
+      <section class="section dashboard">
+        <div class="metric-grid reveal">
+          <article><span>Total bookings</span><strong>248</strong></article>
+          <article><span>Today's visits</span><strong>18</strong></article>
+          <article><span>Pending assignments</span><strong>06</strong></article>
+          <article><span>Active companions</span><strong>42</strong></article>
+        </div>
+
+        <div class="ops-layout">
+          <article class="admin-card reveal">
+            <h2>Booking queue</h2>
+            <table>
+              <thead>
+                <tr><th>Booking</th><th>Status</th><th>Priority</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>CRS-2048</td><td>Pending</td><td>High</td><td>Assign</td></tr>
+                <tr><td>CRS-2049</td><td>On route</td><td>Normal</td><td>Monitor</td></tr>
+                <tr><td>CRS-2050</td><td>In progress</td><td>Normal</td><td>Timeline</td></tr>
+                <tr><td>CRS-2051</td><td>Awaiting info</td><td>High</td><td>Contact</td></tr>
+              </tbody>
+            </table>
+          </article>
+
+          <article class="admin-card reveal delay-1">
+            <h2>Companion match</h2>
+            <div class="companion-row">
+              <div class="avatar">PS</div>
+              <div>
+                <strong>Priya Sharma</strong>
+                <span>2.8 km away - Hindi, English - 4.9 rating</span>
+              </div>
+            </div>
+            <div class="match-list">
+              <span>Police verified</span>
+              <span>Training complete</span>
+              <span>Cardiology experience</span>
+              <span>Available today</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section sop-flow reveal">
+        <p class="eyebrow">SOP statuses</p>
+        <h2>From booking created to visit completed.</h2>
+        <div class="status-lane">
+          <span>Pending assignment</span>
+          <span>Companion assigned</span>
+          <span>On route</span>
+          <span>Patient picked up</span>
+          <span>Registration complete</span>
+          <span>Consultation in progress</span>
+          <span>Prescription received</span>
+          <span>Visit completed</span>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <a class="brand" href="index.html"><span class="brand-mark">C</span><span>Caresy</span></a>
+      <nav><a href="services.html">Services</a><a href="trust.html">Trust</a><a href="quick-help.html">Need help today</a><a href="booking.html">Book for later</a></nav>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>
