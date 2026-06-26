@@ -1,3 +1,16 @@
+// Determine backend API base URL
+const API_BASE = (function() {
+  const loc = window.location;
+  if (loc.protocol === 'file:') {
+    return 'http://localhost:3000';
+  }
+  if (loc.hostname === 'localhost' || loc.hostname === '127.0.0.1') {
+    return loc.port === '3000' ? '' : 'http://localhost:3000';
+  }
+  return ''; // Relative path in production
+})();
+window.API_BASE = API_BASE;
+
 // Navigation menu toggle
 const navToggle = document.querySelector(".nav-toggle");
 if (navToggle) {
@@ -13,6 +26,508 @@ document.querySelectorAll(".main-nav a").forEach((link) => {
     navToggle?.setAttribute("aria-expanded", "false");
   });
 });
+
+// ----------------------------------------------------
+// 0. Authentication System (OTP Modal & Header Widget)
+// ----------------------------------------------------
+(function initAuthentication() {
+  // Inject required HTML elements dynamically (Modal and Toast)
+  function injectAuthDOM() {
+    if (document.getElementById("authModal")) return;
+
+    // 1. Auth Modal
+    const authModalHTML = `
+      <div class="auth-modal-overlay" id="authModal">
+        <div class="auth-modal-card">
+          <button class="auth-modal-close" id="authClose" aria-label="Close authentication modal">&times;</button>
+          
+          <!-- Phase 1: Enter Email Address -->
+          <div id="authStepPhone">
+            <h2>Verify Email Address</h2>
+            <p>Please enter or confirm your email address to receive a 6-digit verification code.</p>
+            <div style="margin-bottom: 24px; text-align: left;">
+              <label style="font-size: 0.9rem; color: var(--muted); display: block; margin-bottom: 8px; font-weight: 600;">Email Address</label>
+              <input type="email" id="authPhoneInput" class="auth-input-text" placeholder="name@example.com" required />
+            </div>
+            <button class="btn btn-primary full" id="authSendOtpBtn">Send Code</button>
+          </div>
+
+          <!-- Phase 2: OTP Verification -->
+          <div id="authStepOTP" style="display: none;">
+            <h2>Enter verification code</h2>
+            <p>We've sent a 6-digit code to <span id="authPhoneDisplay" style="font-weight: 700;">name@example.com</span></p>
+            <div class="otp-input-group">
+              <input type="text" maxlength="1" class="otp-input" data-index="0" inputmode="numeric" pattern="[0-9]*" />
+              <input type="text" maxlength="1" class="otp-input" data-index="1" inputmode="numeric" pattern="[0-9]*" />
+              <input type="text" maxlength="1" class="otp-input" data-index="2" inputmode="numeric" pattern="[0-9]*" />
+              <input type="text" maxlength="1" class="otp-input" data-index="3" inputmode="numeric" pattern="[0-9]*" />
+              <input type="text" maxlength="1" class="otp-input" data-index="4" inputmode="numeric" pattern="[0-9]*" />
+              <input type="text" maxlength="1" class="otp-input" data-index="5" inputmode="numeric" pattern="[0-9]*" />
+            </div>
+            <div class="resend-container">
+              Didn't receive the email? <button class="resend-btn" id="authResendBtn" disabled>Resend in <span id="authTimer">30</span>s</button>
+            </div>
+            <button class="btn btn-primary full" id="authVerifyBtn">Verify & Proceed</button>
+          </div>
+
+          <!-- Phase 3: Name Entry (Signup) -->
+          <div id="authStepName" style="display: none;">
+            <h2>One Last Step</h2>
+            <p>Please enter your full name to complete signup and confirm your booking request.</p>
+            <div style="margin-bottom: 24px; text-align: left;">
+              <label style="font-size: 0.9rem; color: var(--muted); display: block; margin-bottom: 8px; font-weight: 600;">Your Full Name</label>
+              <input type="text" id="authNameInput" class="auth-input-text" placeholder="e.g. Ananya Rao" required />
+            </div>
+            <button class="btn btn-primary full" id="authSignupBtn">Save & Confirm Booking</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // 2. Simulated Email Toast
+    const smsToastHTML = `
+      <div class="sms-toast" id="smsToast">
+        <div class="sms-icon">📧</div>
+        <div class="sms-content">
+          <strong>Email sent from Caresy</strong>
+          <p>A 6-digit verification code was dispatched to your inbox. Check spam if not received.</p>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML("beforeend", authModalHTML);
+    document.body.insertAdjacentHTML("beforeend", smsToastHTML);
+  }
+
+  // Setup immediately
+  injectAuthDOM();
+
+  // Variables & State
+  let currentOtp = "";
+  let timerInterval = null;
+  let onAuthSuccessCallback = null;
+  let tempEmail = "";
+  let tempName = "";
+
+  // Auth helper methods
+  window.getAuthUser = function() {
+    try {
+      const data = localStorage.getItem("caresy_auth");
+      return data ? JSON.parse(data) : null;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  window.setAuthUser = function(user) {
+    localStorage.setItem("caresy_auth", JSON.stringify({ ...user, loggedIn: true }));
+    updateHeaderAuth();
+  };
+
+  window.logoutUser = function() {
+    localStorage.removeItem("caresy_auth");
+    updateHeaderAuth();
+    if (window.location.pathname.includes("booking.html") || window.location.pathname.includes("quick-help.html") || window.location.pathname.includes("my-bookings.html")) {
+      window.location.reload();
+    }
+  };
+
+  // Header Nav Authenticated State Controller
+  function updateHeaderAuth() {
+    const mainNav = document.querySelector(".main-nav");
+    if (!mainNav) return;
+
+    // Clean up existing auth components if any
+    const oldAuthBtn = mainNav.querySelector(".nav-auth");
+    const oldDropdown = mainNav.querySelector(".user-menu-container");
+    if (oldAuthBtn) oldAuthBtn.remove();
+    if (oldDropdown) oldDropdown.remove();
+
+    const user = window.getAuthUser();
+
+    if (user && user.loggedIn) {
+      // Logged In Status
+      const container = document.createElement("div");
+      container.className = "user-menu-container";
+      
+      const initials = (user.name || "C").split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase();
+
+      container.innerHTML = `
+        <button class="user-menu-btn btn" id="userMenuBtn" type="button">
+          <span class="user-avatar-small">${initials}</span>
+          <span>Hi, ${(user.name || "Customer").split(" ")[0]}</span>
+          <svg style="margin-left: 2px; width: 12px; height: 12px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"></path></svg>
+        </button>
+        <div class="user-menu-dropdown" id="userMenuDropdown">
+          <div class="user-info-section">
+            <strong>${user.name}</strong>
+            <span>${user.email || "No email linked"}</span>
+          </div>
+          <a class="dropdown-link" href="booking.html">
+            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"></path></svg>
+            Book Assistance
+          </a>
+          <a class="dropdown-link" href="my-bookings.html">
+            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            My Bookings
+          </a>
+          <a class="dropdown-link" href="trust.html">
+            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.248-8.25-3.285z"></path></svg>
+            Trust & Security
+          </a>
+          <a class="dropdown-link sign-out" id="signOutBtn">
+            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"></path></svg>
+            Sign Out
+          </a>
+        </div>
+      `;
+      mainNav.appendChild(container);
+
+      // Event listeners for dropdown toggle
+      const btn = container.querySelector("#userMenuBtn");
+      const dropdown = container.querySelector("#userMenuDropdown");
+      const signOut = container.querySelector("#signOutBtn");
+
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle("active");
+      });
+
+      signOut.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.logoutUser();
+      });
+
+      // Close when clicking elsewhere
+      document.addEventListener("click", () => {
+        dropdown.classList.remove("active");
+      });
+    } else {
+      // Logged Out Link
+      const authLink = document.createElement("a");
+      authLink.href = "#";
+      authLink.className = "nav-auth";
+      authLink.style.marginLeft = "6px";
+      authLink.style.padding = "10px 18px";
+      authLink.style.borderRadius = "999px";
+      authLink.style.background = "rgba(29, 113, 105, 0.08)";
+      authLink.style.color = "var(--primary)";
+      authLink.style.fontWeight = "750";
+      authLink.textContent = "Sign In";
+
+      authLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.startVerification("", "", () => {
+          window.location.reload();
+        });
+      });
+
+      mainNav.appendChild(authLink);
+    }
+  }
+
+  // Toast Generator
+  function triggerSmsToast() {
+    const toast = document.getElementById("smsToast");
+    if (!toast) return;
+
+    toast.classList.remove("active");
+    void toast.offsetWidth;
+    toast.classList.add("active");
+
+    setTimeout(() => {
+      toast.classList.remove("active");
+    }, 6000);
+  }
+
+  // Timer Countdown Controller
+  function startTimer() {
+    const timerSpan = document.getElementById("authTimer");
+    const resendBtn = document.getElementById("authResendBtn");
+    if (!timerSpan || !resendBtn) return;
+
+    let seconds = 30;
+    resendBtn.disabled = true;
+    timerSpan.textContent = seconds;
+    resendBtn.innerHTML = `Resend in <span id="authTimer">${seconds}</span>s`;
+
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      seconds--;
+      if (seconds <= 0) {
+        clearInterval(timerInterval);
+        resendBtn.disabled = false;
+        resendBtn.textContent = "Resend Code";
+      } else {
+        const span = document.getElementById("authTimer");
+        if (span) span.textContent = seconds;
+      }
+    }, 1000);
+  }
+
+  // Open & Close handlers for Auth Modal
+  window.startVerification = function(email, name, onSuccess) {
+    injectAuthDOM();
+    
+    onAuthSuccessCallback = onSuccess;
+    tempEmail = email || "";
+    tempName = name || "";
+
+    const emailInput = document.getElementById("authPhoneInput");
+    if (emailInput) {
+      emailInput.value = tempEmail;
+      emailInput.style.borderColor = "var(--line)";
+    }
+
+    const stepPhone = document.getElementById("authStepPhone");
+    const stepOTP = document.getElementById("authStepOTP");
+    const stepName = document.getElementById("authStepName");
+    
+    if (stepPhone) stepPhone.style.display = "block";
+    if (stepOTP) stepOTP.style.display = "none";
+    if (stepName) stepName.style.display = "none";
+
+    const modal = document.getElementById("authModal");
+    if (modal) modal.classList.add("active");
+
+    setTimeout(() => {
+      if (emailInput) emailInput.focus();
+    }, 100);
+  };
+
+  window.sendOtpFlow = function() {
+    const emailInput = document.getElementById("authPhoneInput");
+    if (!emailInput) return;
+
+    const emailVal = emailInput.value.trim();
+    if (!emailVal) {
+      emailInput.style.borderColor = "var(--coral)";
+      emailInput.focus();
+      return;
+    }
+
+    tempEmail = emailVal;
+    
+    const emailDisplay = document.getElementById("authPhoneDisplay");
+    if (emailDisplay) emailDisplay.textContent = tempEmail;
+
+    // Reset OTP inputs
+    const inputs = document.querySelectorAll(".otp-input");
+    inputs.forEach(input => {
+      input.value = "";
+      input.style.borderColor = "var(--line)";
+    });
+
+    const stepPhone = document.getElementById("authStepPhone");
+    const stepOTP = document.getElementById("authStepOTP");
+    if (stepPhone) stepPhone.style.display = "none";
+    if (stepOTP) stepOTP.style.display = "block";
+
+    fetch(`${window.API_BASE}/api/auth/send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: tempEmail })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        setTimeout(() => {
+          triggerSmsToast();
+        }, 500);
+      }
+    })
+    .catch(err => console.error('Error sending OTP:', err));
+
+    startTimer();
+
+    setTimeout(() => {
+      if (inputs[0]) inputs[0].focus();
+    }, 100);
+  };
+
+  window.closeVerificationModal = function() {
+    const modal = document.getElementById("authModal");
+    if (modal) modal.classList.remove("active");
+    clearInterval(timerInterval);
+  };
+
+  // Attach event handlers inside Auth Modal
+  function setupAuthEvents() {
+    const closeBtn = document.getElementById("authClose");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", window.closeVerificationModal);
+    }
+
+    const modal = document.getElementById("authModal");
+    if (modal) {
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) window.closeVerificationModal();
+      });
+    }
+
+    const sendOtpBtn = document.getElementById("authSendOtpBtn");
+    if (sendOtpBtn) {
+      sendOtpBtn.addEventListener("click", window.sendOtpFlow);
+    }
+
+    const phoneInput = document.getElementById("authPhoneInput");
+    if (phoneInput) {
+      phoneInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          window.sendOtpFlow();
+        }
+      });
+    }
+
+    const inputs = document.querySelectorAll(".otp-input");
+    inputs.forEach((input, index) => {
+      input.addEventListener("input", (e) => {
+        const val = e.target.value;
+        if (val) {
+          e.target.value = val.replace(/\D/g, "").substring(val.length - 1);
+          if (e.target.value) {
+            input.style.borderColor = "var(--primary)";
+            const next = document.querySelector(`.otp-input[data-index="${index + 1}"]`);
+            if (next) next.focus();
+          } else {
+            input.style.borderColor = "var(--line)";
+          }
+        }
+        checkAndVerifyOTP(false);
+      });
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !input.value) {
+          const prev = document.querySelector(`.otp-input[data-index="${index - 1}"]`);
+          if (prev) {
+            prev.focus();
+            prev.value = "";
+            prev.style.borderColor = "var(--line)";
+          }
+        }
+      });
+    });
+
+    const verifyBtn = document.getElementById("authVerifyBtn");
+    if (verifyBtn) {
+      verifyBtn.addEventListener("click", () => checkAndVerifyOTP(true));
+    }
+
+    const resendBtn = document.getElementById("authResendBtn");
+    if (resendBtn) {
+      resendBtn.addEventListener("click", () => {
+        fetch(`${window.API_BASE}/api/auth/send-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: tempEmail })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            triggerSmsToast();
+            startTimer();
+            const inputs = document.querySelectorAll(".otp-input");
+            inputs.forEach(input => { input.value = ""; input.style.borderColor = "var(--line)"; });
+            if (inputs[0]) inputs[0].focus();
+          }
+        })
+        .catch(err => console.error('Error resending OTP:', err));
+      });
+    }
+
+    const signupBtn = document.getElementById("authSignupBtn");
+    const nameInput = document.getElementById("authNameInput");
+    if (signupBtn && nameInput) {
+      signupBtn.addEventListener("click", () => {
+        const nameVal = nameInput.value.trim();
+        if (!nameVal) {
+          nameInput.style.borderColor = "var(--coral)";
+          nameInput.focus();
+          return;
+        }
+        
+        fetch(`${window.API_BASE}/api/auth/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: tempEmail, name: nameVal })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            window.setAuthUser(data.user);
+            window.closeVerificationModal();
+            if (onAuthSuccessCallback) onAuthSuccessCallback();
+          }
+        })
+        .catch(err => console.error('Error saving profile:', err));
+      });
+    }
+  }
+
+  function checkAndVerifyOTP(force) {
+    const inputs = document.querySelectorAll(".otp-input");
+    let code = "";
+    inputs.forEach(input => code += input.value);
+
+    if (code.length === 6) {
+      fetch(`${window.API_BASE}/api/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: tempEmail, otp: code })
+      })
+      .then(res => {
+        if (res.ok) return res.json();
+        throw new Error('Verification failed');
+      })
+      .then(data => {
+        if (data.success) {
+          if (data.user.name) {
+            window.setAuthUser(data.user);
+            window.closeVerificationModal();
+            if (onAuthSuccessCallback) onAuthSuccessCallback();
+          } else {
+            const stepOTP = document.getElementById("authStepOTP");
+            const stepName = document.getElementById("authStepName");
+            if (stepOTP) stepOTP.style.display = "none";
+            if (stepName) {
+              stepName.style.display = "block";
+              const nameInput = document.getElementById("authNameInput");
+              if (nameInput) setTimeout(() => nameInput.focus(), 100);
+            }
+          }
+        } else {
+          triggerOtpError(inputs);
+        }
+      })
+      .catch(err => {
+        console.error('Error verifying OTP:', err);
+        triggerOtpError(inputs);
+      });
+    } else if (force) {
+      inputs.forEach(input => {
+        if (!input.value) input.style.borderColor = "var(--coral)";
+      });
+    }
+  }
+
+  function triggerOtpError(inputs) {
+    inputs.forEach(input => {
+      input.style.borderColor = "var(--coral)";
+      input.style.transform = "translateX(5px)";
+    });
+    setTimeout(() => {
+      inputs.forEach(input => {
+        input.style.transform = "translateX(0)";
+        input.value = "";
+      });
+      if (inputs[0]) inputs[0].focus();
+    }, 300);
+  }
+
+  updateHeaderAuth();
+  setupAuthEvents();
+})();
 
 // Reveal items on scroll (IntersectionObserver)
 const revealItems = document.querySelectorAll(".reveal");
@@ -242,24 +757,72 @@ if (bookingForm) {
     const formData = new FormData(bookingForm);
     const patientName = String(formData.get("patientName") || "Patient").trim();
     const service = String(formData.get("service") || "Hospital Companion");
-    const isUrgent = document.body.querySelector(".urgent-page");
+    const isUrgent = !!document.body.querySelector(".urgent-page");
+    const phoneVal = String(formData.get("phone") || "").trim();
+    const emailVal = String(formData.get("email") || "").trim();
+    const customerNameVal = String(formData.get("customerName") || "").trim();
 
-    if (bookingId && (bookingId.textContent === "CRS-XXXX" || bookingId.textContent === "Pending assignment")) {
-      const randomId = Math.floor(1000 + Math.random() * 9000);
-      bookingId.textContent = `CRS-${randomId}`;
+    const proceedWithBooking = () => {
+      const user = window.getAuthUser();
+      
+      const payload = {
+        patientName,
+        age: formData.get("age") || "",
+        phone: phoneVal,
+        email: user ? user.email : emailVal,
+        emergency: formData.get("emergency") || "",
+        hospital: formData.get("hospital") || "",
+        department: formData.get("department") || "",
+        doctor: formData.get("doctor") || "",
+        date: formData.get("date") || "",
+        time: formData.get("time") || "",
+        language: formData.get("language") || "No preference",
+        service,
+        needs: Array.from(formData.getAll("needs")),
+        notes: formData.get("notes") || "",
+        isUrgent
+      };
+
+      fetch(`${window.API_BASE}/api/bookings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          const booking = data.booking;
+          if (bookingId) {
+            bookingId.textContent = booking.id;
+          }
+          if (bookingStatus) {
+            bookingStatus.textContent = isUrgent
+              ? `Urgent call-back requested for ${booking.patientName} - ${booking.service}`
+              : `Request submitted for ${booking.patientName} - ${booking.service}`;
+          }
+          if (previewNextStep) {
+            previewNextStep.textContent = "Operations desk is verifying details. Saved to backend.";
+          }
+          bookingForm.reset();
+          
+          setTimeout(() => {
+            window.location.href = 'my-bookings.html';
+          }, 2000);
+        }
+      })
+      .catch(err => {
+        console.error('Error creating booking:', err);
+      });
+    };
+
+    const user = window.getAuthUser();
+    if (user && user.loggedIn) {
+      proceedWithBooking();
+    } else {
+      window.startVerification(emailVal, customerNameVal, () => {
+        proceedWithBooking();
+      });
     }
-
-    if (bookingStatus) {
-      bookingStatus.textContent = isUrgent
-        ? `Urgent call-back requested for ${patientName} - ${service}`
-        : `Request submitted for ${patientName} - ${service}`;
-    }
-
-    if (previewNextStep) {
-      previewNextStep.textContent = "Operations desk is verifying details. Call-back in progress.";
-    }
-
-    bookingForm.querySelector("button")?.focus();
   });
 
   // Initialize preview on page load

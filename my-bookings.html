@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="View your Caresy booking requests." />
+    <title>Caresy | My Bookings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .dashboard-layout {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 20px 24px 104px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+      .booking-list-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .booking-card {
+        padding: 24px;
+        transition: transform 180ms ease, box-shadow 180ms ease;
+      }
+      .booking-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .booking-card-id {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin: 0;
+      }
+      .status-badge {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        font-weight: 750;
+        border-radius: 999px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+      .status-badge.pending {
+        background: rgba(247, 189, 99, 0.12);
+        color: #b87b1c;
+      }
+      .status-badge.review {
+        background: rgba(231, 127, 98, 0.12);
+        color: var(--coral);
+      }
+      .status-badge.assigned {
+        background: rgba(8, 121, 111, 0.12);
+        color: var(--primary);
+      }
+      .status-badge.active {
+        background: rgba(39, 168, 117, 0.12);
+        color: #1e7e58;
+      }
+      .status-badge.completed {
+        background: rgba(99, 113, 107, 0.12);
+        color: var(--muted);
+      }
+      .booking-details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 18px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 18px;
+      }
+      .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .detail-label {
+        font-size: 0.8rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+      }
+      .detail-value {
+        font-size: 1rem;
+        color: var(--ink);
+        font-weight: 550;
+      }
+      .needs-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .need-tag {
+        padding: 4px 10px;
+        font-size: 0.74rem;
+        border-radius: 8px;
+        background: var(--surface-2);
+        color: var(--primary-dark);
+        font-weight: 750;
+        border: 1px solid rgba(8, 121, 111, 0.1);
+      }
+      .booking-card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 14px;
+      }
+      .booking-date-stamp {
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+      .unauth-card {
+        padding: 48px 32px;
+        text-align: center;
+        max-width: 600px;
+        margin: 40px auto;
+      }
+      .unauth-card h2 {
+        font-size: 1.8rem;
+        margin-bottom: 12px;
+        color: var(--ink);
+      }
+      .unauth-card p {
+        font-size: 1.05rem;
+        margin-bottom: 24px;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 48px 32px;
+      }
+      .empty-state h3 {
+        font-size: 1.4rem;
+        margin-bottom: 8px;
+        color: var(--ink);
+      }
+      .empty-state p {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="app-bar">
+      <a class="brand" href="index.html"><span class="brand-mark">C</span><span>Caresy</span></a>
+      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="trust.html">Trust</a>
+        <a class="nav-quick" href="quick-help.html">Need help today</a>
+        <a class="nav-cta" href="booking.html">Book for later</a>
+      </nav>
+    </header>
+
+    <main class="page my-bookings-page">
+      <section class="page-hero reveal">
+        <p class="eyebrow">Your Account</p>
+        <h1>My Bookings</h1>
+        <p>Track your submitted care requests, matching status, and history of hospital companions.</p>
+      </section>
+
+      <div class="dashboard-layout">
+        <!-- Auth Required Section -->
+        <div id="unauthSection" style="display: none;">
+          <div class="unauth-card material-card reveal">
+            <div style="font-size: 3rem; margin-bottom: 16px;">🔐</div>
+            <h2>Authentication Required</h2>
+            <p>Please sign in with your phone number to access your booking dashboard and track companion matches.</p>
+            <button class="btn btn-primary" id="unauthSignInBtn">Sign In / Register</button>
+          </div>
+        </div>
+
+        <!-- Bookings Content Section -->
+        <div id="bookingsSection" style="display: none;">
+          <div class="booking-list-container" id="bookingsList">
+            <!-- Dynamic bookings rendered here -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-brand-section">
+        <a class="brand" href="index.html" style="margin-bottom: 12px; display: inline-flex;"><span class="brand-mark">C</span><span>Caresy</span></a>
+        <p class="footer-desc" style="max-width: 320px; font-size: 0.88rem; line-height: 1.5; color: var(--muted); margin-bottom: 16px;">
+          Trusted hospital companions for elderly and vulnerable patients in India. We bridge the gap when families cannot be physically present.
+        </p>
+        <p class="footer-address" style="font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 16px;">
+          <strong>Caresy Care Services Pvt. Ltd.</strong><br />
+          4th Floor, Sector 7, HSR Layout,<br />
+          Bengaluru, Karnataka 560102
+        </p>
+      </div>
+      <div class="footer-links-section" style="display: flex; gap: 40px; flex-wrap: wrap;">
+        <nav aria-label="Footer navigation" style="display: flex; flex-direction: column; gap: 8px;">
+          <strong style="color: var(--ink); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Company</strong>
+          <a href="about.html" style="font-size: 0.9rem; color: var(--muted);">About Us</a>
+          <a href="services.html" style="font-size: 0.9rem; color: var(--muted);">Our Services</a>
+          <a href="trust.html" style="font-size: 0.9rem; color: var(--muted);">Trust Framework</a>
+          <a href="faq.html" style="font-size: 0.9rem; color: var(--muted);">FAQs & Coverage</a>
+        </nav>
+        <nav aria-label="Quick Actions" style="display: flex; flex-direction: column; gap: 8px;">
+          <strong style="color: var(--ink); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Need Care?</strong>
+          <a href="quick-help.html" style="font-size: 0.9rem; color: var(--muted);">Same-Day Help</a>
+          <a href="booking.html" style="font-size: 0.9rem; color: var(--muted);">Schedule Visit</a>
+          <a href="operations.html" style="font-size: 0.9rem; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 6px; margin-top: 4px;">Ops Control Desk &rarr;</a>
+        </nav>
+        <nav aria-label="Legal navigation" style="display: flex; flex-direction: column; gap: 8px;">
+          <strong style="color: var(--ink); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Legal</strong>
+          <a href="privacy.html" style="font-size: 0.9rem; color: var(--muted);">Privacy Policy</a>
+          <a href="terms.html" style="font-size: 0.9rem; color: var(--muted);">Terms of Service</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const unauthSection = document.getElementById("unauthSection");
+        const bookingsSection = document.getElementById("bookingsSection");
+        const bookingsList = document.getElementById("bookingsList");
+        const unauthSignInBtn = document.getElementById("unauthSignInBtn");
+
+        function loadDashboard() {
+          const user = window.getAuthUser();
+          if (!user || !user.loggedIn) {
+            unauthSection.style.display = "block";
+            bookingsSection.style.display = "none";
+            return;
+          }
+
+          unauthSection.style.display = "none";
+          bookingsSection.style.display = "block";
+
+          // Fetch bookings from backend
+          fetch(`${window.API_BASE || ''}/api/bookings?email=${encodeURIComponent(user.email)}`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                renderBookings(data.bookings);
+              } else {
+                bookingsList.innerHTML = `<div class="empty-state material-card"><h3>Error loading bookings</h3><p>Could not fetch your active requests.</p></div>`;
+              }
+            })
+            .catch(err => {
+              console.error('Error fetching bookings:', err);
+              bookingsList.innerHTML = `<div class="empty-state material-card"><h3>Error loading bookings</h3><p>Could not reach the server. Please verify your connection.</p></div>`;
+            });
+        }
+
+        function renderBookings(bookings) {
+          if (!bookings || bookings.length === 0) {
+            bookingsList.innerHTML = `
+              <div class="empty-state material-card reveal visible">
+                <div style="font-size: 3rem; margin-bottom: 12px;">📅</div>
+                <h3>No Bookings Yet</h3>
+                <p>You haven't scheduled any companions yet. Get started by booking a service.</p>
+                <a class="btn btn-primary" href="booking.html">Schedule a Visit</a>
+              </div>
+            `;
+            return;
+          }
+
+          bookingsList.innerHTML = bookings.map(b => {
+            const statusLower = b.status.toLowerCase();
+            let statusClass = 'pending';
+            if (statusLower.includes('review')) {
+              statusClass = 'review';
+            } else if (statusLower.includes('assigned')) {
+              statusClass = 'assigned';
+            } else if (statusLower.includes('active')) {
+              statusClass = 'active';
+            } else if (statusLower.includes('completed')) {
+              statusClass = 'completed';
+            }
+            
+            const needsHtml = (b.needs && b.needs.length > 0) 
+              ? `<div class="detail-item" style="grid-column: 1 / -1;">
+                   <span class="detail-label">Specific Needs</span>
+                   <div class="needs-tags">${b.needs.map(n => `<span class="need-tag">${n}</span>`).join('')}</div>
+                 </div>` 
+              : '';
+
+            const companionHtml = b.companion 
+              ? `<div style="margin-top: 16px; border-top: 1px dashed var(--line); padding-top: 16px;">
+                   <strong style="font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 10px;">Assigned Hospital Companion</strong>
+                   <div style="background: rgba(8, 121, 111, 0.04); border: 1px solid rgba(8, 121, 111, 0.12); padding: 16px; border-radius: 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                     <div style="width: 48px; height: 48px; border-radius: 14px; background: ${b.companion.color || 'var(--primary)'}; color: #fff; font-size: 1.25rem; font-weight: 900; display: grid; place-items: center;">${b.companion.avatar || 'C'}</div>
+                     <div style="flex: 1; min-width: 150px;">
+                       <strong style="font-size: 1.05rem; color: var(--ink); display: block;">${b.companion.name}</strong>
+                       <span style="font-size: 0.82rem; color: var(--muted);">${b.companion.rating}</span>
+                     </div>
+                     <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                       <span style="padding: 4px 8px; font-size: 0.7rem; border-radius: 8px; background: var(--surface); color: var(--primary-dark); font-weight: 800; border: 1px solid var(--line); box-shadow: var(--shadow-1);">${b.companion.verification}</span>
+                       <span style="padding: 4px 8px; font-size: 0.7rem; border-radius: 8px; background: var(--surface); color: var(--primary-dark); font-weight: 800; border: 1px solid var(--line); box-shadow: var(--shadow-1);">${b.companion.lang}</span>
+                       <span style="padding: 4px 8px; font-size: 0.7rem; border-radius: 8px; background: var(--mint); color: var(--primary-dark); font-weight: 800; box-shadow: var(--shadow-1);">${b.companion.specialty}</span>
+                     </div>
+                   </div>
+                 </div>`
+              : '';
+
+            const dateOptions = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            const createdDate = new Date(b.createdAt).toLocaleDateString('en-IN', dateOptions);
+
+            return `
+              <div class="booking-card material-card reveal">
+                <div class="booking-card-header">
+                  <div>
+                    <h2 class="booking-card-id">${b.id}</h2>
+                    <span class="booking-date-stamp">Created: ${createdDate}</span>
+                  </div>
+                  <span class="status-badge ${statusClass}">${b.status}</span>
+                </div>
+                <div class="booking-details-grid">
+                  <div class="detail-item">
+                    <span class="detail-label">Patient</span>
+                    <span class="detail-value">${b.patientName} ${b.age ? `(${b.age} yrs)` : ''}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">Hospital</span>
+                    <span class="detail-value">${b.hospital}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">Department</span>
+                    <span class="detail-value">${b.department || 'General'}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">Service Plan</span>
+                    <span class="detail-value">${b.service}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">Appointment Time</span>
+                    <span class="detail-value">${b.date} at ${b.time || 'TBD'}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">Language</span>
+                    <span class="detail-value">${b.language}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">Contact Mobile</span>
+                    <span class="detail-value">${b.phone || '—'}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">Contact Email</span>
+                    <span class="detail-value">${b.email || '—'}</span>
+                  </div>
+                  ${needsHtml}
+                </div>
+                ${b.notes ? `
+                  <div style="background: rgba(33, 48, 44, 0.03); padding: 12px; border-radius: 12px; font-size: 0.9rem; color: var(--muted);">
+                    <strong>Notes:</strong> ${b.notes}
+                  </div>
+                ` : ''}
+                ${companionHtml}
+              </div>
+            `;
+          }).join('');
+
+          // Trigger reveal animations on dynamic cards
+          const revealItems = bookingsList.querySelectorAll(".reveal");
+          revealItems.forEach((item) => item.classList.add("visible"));
+        }
+
+        unauthSignInBtn.addEventListener("click", () => {
+          window.startVerification("", "", () => {
+            loadDashboard();
+          });
+        });
+
+        loadDashboard();
+        
+        // Trigger reveal animations on page elements
+        const pageReveal = document.querySelectorAll(".reveal");
+        pageReveal.forEach((item) => item.classList.add("visible"));
+      });
+    </script>
+  </body>
+</html>
