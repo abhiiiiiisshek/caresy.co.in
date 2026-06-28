@@ -227,9 +227,18 @@ document.querySelectorAll(".main-nav a").forEach((link) => {
   }
 
   // Toast Generator
-  function triggerSmsToast() {
+  function triggerSmsToast(otpCode) {
     const toast = document.getElementById("smsToast");
     if (!toast) return;
+
+    const toastDesc = toast.querySelector("p");
+    if (toastDesc) {
+      if (otpCode) {
+        toastDesc.innerHTML = `A 6-digit verification code was dispatched to your inbox. <strong style="color: var(--primary); font-size: 1.1rem; display: block; margin-top: 6px;">Demo Code: ${otpCode}</strong>`;
+      } else {
+        toastDesc.textContent = "A 6-digit verification code was dispatched to your inbox. Check spam if not received.";
+      }
+    }
 
     toast.classList.remove("active");
     void toast.offsetWidth;
@@ -332,7 +341,7 @@ document.querySelectorAll(".main-nav a").forEach((link) => {
     .then(data => {
       if (data.success) {
         setTimeout(() => {
-          triggerSmsToast();
+          triggerSmsToast(data.otp);
         }, 500);
       }
     })
@@ -425,7 +434,7 @@ document.querySelectorAll(".main-nav a").forEach((link) => {
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            triggerSmsToast();
+            triggerSmsToast(data.otp);
             startTimer();
             const inputs = document.querySelectorAll(".otp-input");
             inputs.forEach(input => { input.value = ""; input.style.borderColor = "var(--line)"; });

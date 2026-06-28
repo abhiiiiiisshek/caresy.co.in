@@ -19,6 +19,15 @@
     "caresy_test_885644@web-library.net": {
       "email": "caresy_test_885644@web-library.net",
       "name": "Automated Test User"
+    },
+    "test@example.com": {
+      "email": "test@example.com",
+      "name": ""
+    },
+    "demo@caresy.co": {
+      "email": "demo@caresy.co",
+      "name": "Ramesh Kumar",
+      "phone": "9876543210"
     }
   },
   "bookings": [
@@ -143,6 +152,32 @@
         "lang": "Hindi, English",
         "specialty": "Cardiology",
         "color": "#08796f"
+      }
+    },
+    {
+      "id": "CRS-8611",
+      "patientName": "Ramesh Kumar",
+      "age": "68",
+      "phone": "9876543210",
+      "email": "demo@caresy.co",
+      "emergency": "",
+      "hospital": "Fortis Hospital",
+      "department": "Cardiology",
+      "doctor": "",
+      "date": "2026-06-28",
+      "time": "10:00 AM",
+      "language": "No preference",
+      "service": "Hospital Companion",
+      "needs": [
+        "Wheelchair assistance"
+      ],
+      "notes": "Needs support walking to cardiology department",
+      "status": "Companion assigned",
+      "createdAt": "2026-06-28T01:46:54.365Z",
+      "companion": {
+        "name": "Priya Sharma",
+        "avatar": "PS",
+        "rating": "★ 4.9 (82 visits)"
       }
     }
   ]
