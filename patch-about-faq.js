@@ -1,46 +1,79 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Frequently Asked Questions about Caresy hospital companion services, cancellation policy, city coverage, and backup protocols." />
-    <title>Caresy | FAQs & Coverage</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
-  
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%2308796f%22>C</text></svg>">
-    <script src="https://unpkg.com/lucide@latest"></script>
-</head>
-  <body>
-    <a href="#main-content" class="sr-only focus:not-sr-only" style="position:absolute; left:-9999px;">Skip to content</a>
-    <header class="app-bar">
-      <a class="brand" href="index.html" aria-label="Caresy home">
-      <span class="brand-mark">C</span>
-      <span style="margin-left: 6px;">Caresy</span>
-    </a>
-      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
-        <span></span>
-        <span></span>
-      </button>
-      <nav class="main-nav" aria-label="Primary navigation">
-        <a href="index.html">Home</a>
-        <a href="services.html">Services</a>
-        <a href="trust.html">Trust</a>
-        <a class="nav-quick" href="quick-help.html">Need help today</a>
-        <a class="nav-cta" href="booking.html">Book for later</a>
-      </nav>
-    </header>
+const fs = require('fs');
+const path = require('path');
 
-    <main class="page" id="main-content">
-      <section class="page-hero reveal">
-        <p class="eyebrow">Got questions?</p>
-        <h1>Frequently Asked Questions & Coverage.</h1>
-        <p>Everything you need to know about our rates, cities covered, cancellation rules, and emergency guidelines.</p>
+// -----------------------------------------------------
+// 1. PATCH ABOUT.HTML
+// -----------------------------------------------------
+const aboutFile = path.join(__dirname, 'about.html');
+let aboutContent = fs.readFileSync(aboutFile, 'utf8');
+
+// H1: Founder profiles
+const founderCards = `
+            <h2>Our Founders & Leadership</h2>
+            <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 20px;">
+              <div class="material-card" style="display: flex; gap: 16px; align-items: flex-start; padding: 20px; background: rgba(255,255,255,0.7);">
+                <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-size: 1.4rem; font-weight: bold; flex-shrink: 0;">RS</div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <strong style="font-size: 1.1rem; color: var(--ink);">Rohan Sen</strong>
+                    <a href="#" aria-label="LinkedIn Profile" style="color: #0a66c2;"><i data-lucide="linkedin" style="width: 18px;"></i></a>
+                  </div>
+                  <span style="color: var(--muted); font-size: 0.85rem; display: block; margin-bottom: 8px;">Co-Founder & CEO (ex-Healthcare Operations)</span>
+                  <p style="font-size: 0.9rem; margin: 0; line-height: 1.5;">Rohan started Caresy after managing his grandfather's recurring cardiology visits from another city, realizing the massive gap in coordinated care logistics.</p>
+                </div>
+              </div>
+              <div class="material-card" style="display: flex; gap: 16px; align-items: flex-start; padding: 20px; background: rgba(255,255,255,0.7);">
+                <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--coral); color: #fff; display: grid; place-items: center; font-size: 1.4rem; font-weight: bold; flex-shrink: 0;">MN</div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <strong style="font-size: 1.1rem; color: var(--ink);">Dr. Meera Nair</strong>
+                    <a href="#" aria-label="LinkedIn Profile" style="color: #0a66c2;"><i data-lucide="linkedin" style="width: 18px;"></i></a>
+                  </div>
+                  <span style="color: var(--muted); font-size: 0.85rem; display: block; margin-bottom: 8px;">Co-Founder & Head of Companion Training</span>
+                  <p style="font-size: 0.9rem; margin: 0; line-height: 1.5;">Dr. Nair designs our companion onboarding curriculum, bringing 15+ years of clinical protocol and patient relation experience.</p>
+                </div>
+              </div>
+            </div>
+`;
+aboutContent = aboutContent.replace(/<h2>Our Founders & Leadership<\/h2>[\s\S]*?<\/div>\s*<\/div>/, founderCards + '\n          </div>');
+
+// H2: Origin story image (inserting into the left column of the split)
+const originStoryImage = `
+            <h2>The Caresy Mission</h2>
+            <img src="assets/caresy-hero.png" alt="Caresy origin story" style="width: 100%; border-radius: 16px; margin: 16px 0; aspect-ratio: 16/9; object-fit: cover;" />
+            <p>We believe hospital visits shouldn't be stressful chores or lonely trials for the elderly. Navigating massive hospital departments, stand-in queues, billing terminals, and pharmacy counters is physically exhausting. When families live in other cities or struggle to take leave, Caresy companions step in as dedicated family stand-ins, providing reliable logistics support and compassionate presence.</p>
+`;
+aboutContent = aboutContent.replace(/<h2>The Caresy Mission<\/h2>\s*<p>We believe hospital visits shouldn't be stressful chores/, originStoryImage.trim().replace('<p>We believe hospital visits shouldn\'t be stressful chores', ''));
+
+// H3: Typos
+aboutContent = aboutContent.replace('design our companion', 'designs our companion');
+aboutContent = aboutContent.replace('coordinate-care', 'coordinated care');
+
+// H4: Trust framework CTA
+const trustCTA = `
+      <section class="section trust-cta reveal" style="text-align: center; margin: 60px auto; max-width: 800px;">
+        <div class="material-card" style="background: var(--surface-2); padding: 40px;">
+          <i data-lucide="shield-check" style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 16px;"></i>
+          <h2>How we verify our companions</h2>
+          <p style="margin-bottom: 24px;">Trust isn't given, it's earned. Learn about our 6-step Aadhaar and Police verification protocol.</p>
+          <a href="trust.html" class="btn btn-primary">Read our full trust framework</a>
+        </div>
       </section>
+`;
+aboutContent = aboutContent.replace('</main>', trustCTA + '\n</main>');
 
-      
+fs.writeFileSync(aboutFile, aboutContent, 'utf8');
+console.log('about.html patched');
+
+
+// -----------------------------------------------------
+// 2. PATCH FAQ.HTML
+// -----------------------------------------------------
+const faqFile = path.join(__dirname, 'faq.html');
+let faqContent = fs.readFileSync(faqFile, 'utf8');
+
+// I1 & I2: Search bar and accordions
+const faqSectionReplace = `
       <section class="section faq-section" style="max-width: 800px; margin: 0 auto;">
         <div style="margin-bottom: 32px; position: relative;">
           <i data-lucide="search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--muted);"></i>
@@ -145,20 +178,12 @@
           .faq-accordion[open] summary { border-bottom: 1px solid var(--line); margin-bottom: 16px; }
         </style>
       </section>
+`;
 
+faqContent = faqContent.replace(/<section class="section faq-section">[\s\S]*?<\/section>/, faqSectionReplace);
 
-      <section class="section final-cta reveal">
-        <div>
-          <p class="eyebrow">Have a specific question?</p>
-          <h2>We are available for quick chat on WhatsApp.</h2>
-          <p>No bots, just our core operations team answering your queries in real-time.</p>
-        </div>
-        <div class="final-actions">
-          <a class="btn btn-primary" href="https://wa.me/919717500225" target="_blank" rel="noopener">Chat on WhatsApp</a>
-          <a class="btn btn-glass" href="booking.html">Book a companion</a>
-        </div>
-      </section>
-    
+// I3: Coverage map
+const coverageMap = `
       <section class="section coverage-section reveal" style="padding-top: 60px; padding-bottom: 40px;">
         <div class="material-card" style="background: rgba(231, 243, 237, 0.6); display: flex; flex-direction: column; gap: 14px;">
           <span class="coverage-badge" style="background: var(--primary); color: #fff; padding: 4px 12px; border-radius: 99px; font-size: 0.72rem; font-weight: 900; text-transform: uppercase; width: max-content; letter-spacing: 0.05em;">Coverage Area</span>
@@ -182,111 +207,8 @@
           </div>
         </div>
       </section>
+`;
+faqContent = faqContent.replace('</main>', coverageMap + '\n</main>');
 
-</main>
-
-        
-    
-    
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-brand">
-          <a class="brand" href="index.html" aria-label="Caresy home">
-      <span class="brand-mark">C</span>
-      <span style="margin-left: 6px;">Caresy</span>
-    </a>
-          <p class="footer-desc">
-            Trusted hospital companions for elderly and vulnerable patients in India. We bridge the gap when families cannot be physically present.
-          </p>
-          <div class="footer-badges">
-            <div class="footer-badge">
-              <i data-lucide="shield"></i>
-              <span>Police Verified Companions</span>
-            </div>
-            <div class="footer-badge">
-              <i data-lucide="check-circle"></i>
-              <span>AuthBridge Secured</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="footer-links">
-          <div class="footer-col">
-            <h4>Company</h4>
-            <a href="about.html">About Us</a>
-            <a href="services.html">Our Services</a>
-            <a href="trust.html">Trust Framework</a>
-            <a href="faq.html">FAQs & Coverage</a>
-          </div>
-          <div class="footer-col">
-            <h4>Need Care?</h4>
-            <a href="quick-help.html">Same-Day Help</a>
-            <a href="booking.html">Schedule Visit</a>
-            <a href="my-bookings.html">My Bookings</a>
-          </div>
-          <div class="footer-col">
-            <h4>Legal</h4>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Service</a>
-          </div>
-        </div>
-
-        <div class="footer-newsletter">
-          <h4>Stay Connected</h4>
-          <p>Get tips and guides on caring for aging family members.</p>
-          <form class="footer-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing!');">
-            <input type="email" placeholder="Email address" required />
-            <button type="submit" aria-label="Subscribe">
-              <i data-lucide="send"></i>
-            </button>
-          </form>
-          <div class="footer-socials">
-            <a href="https://wa.me/919717500225" target="_blank" rel="noopener" aria-label="WhatsApp">
-              <i data-lucide="message-circle"></i> WhatsApp
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">
-              <i data-lucide="linkedin"></i>
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter">
-              <i data-lucide="twitter"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-      
-      <div class="footer-bottom">
-        <div class="footer-bottom-container">
-          <p class="copyright">&copy; 2026 Caresy Care Services Pvt. Ltd. All rights reserved.</p>
-          <div class="footer-bottom-links">
-            <span class="footer-address-mini">4th Floor, Sector 7, HSR Layout, Bengaluru, KA 560102</span>
-            <span class="footer-divider">|</span>
-            <a href="tel:+919717500225">+91 97175 00225</a>
-            <span class="footer-divider">|</span>
-            <a href="mailto:support@caresy.co">support@caresy.co</a>
-          </div>
-        </div>
-      </div>
-    </footer>
-
-
-
-
-    <!-- Floating WhatsApp Widget -->
-    <a class="whatsapp-float" href="https://wa.me/919717500225" target="_blank" rel="noopener" aria-label="Chat with Caresy on WhatsApp">
-      <svg class="whatsapp-icon" viewBox="0 0 24 24" width="24" height="24">
-        <path fill="#fff" d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.333 4.993L2 22l5.13-1.347a9.96 9.96 0 0 0 4.887 1.282h.005c5.502 0 9.985-4.479 9.986-9.985 0-2.67-1.04-5.18-2.93-7.071A9.9 9.9 0 0 0 12.012 2zm5.726 14.126c-.314.885-1.536 1.636-2.122 1.768-.586.13-1.173.23-3.793-.83-3.354-1.356-5.503-4.757-5.671-4.982-.168-.223-1.35-1.79-1.35-3.42 0-1.628.85-2.43 1.15-2.76.3-.332.65-.415.87-.415.22 0 .43.01.62.01.2 0 .46-.08.72.55.27.65.91 2.22.99 2.38.08.17.13.36.01.58-.11.23-.25.37-.37.52-.13.15-.27.3-.39.45-.14.16-.29.34-.12.63.17.29.74 1.23 1.59 1.98.1.09.2.18.3.26.85.76 1.57.99 1.87 1.14.3.15.47.12.65-.08.18-.2.78-.9 1-1.2.22-.3.43-.25.72-.14.3.11 1.88.89 2.2 1.05.32.16.54.24.62.38.08.14.08.82-.24 1.7z"/>
-      </svg>
-      <span>WhatsApp Help</span>
-    </a>
-
-    <script src="script.js"></script>
-  
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        if(window.lucide) {
-          window.lucide.createIcons();
-        }
-      });
-    </script>
-</body>
-</html>
+fs.writeFileSync(faqFile, faqContent, 'utf8');
+console.log('faq.html patched');

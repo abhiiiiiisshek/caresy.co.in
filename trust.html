@@ -9,10 +9,56 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
-  </head>
+  
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%2308796f%22>C</text></svg>">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+.verification-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto 60px;
+}
+.verification-timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 32px;
+  width: 2px;
+  background: var(--line);
+}
+.timeline-item {
+  position: relative;
+  padding-left: 80px;
+  padding-right: 20px;
+}
+.timeline-icon {
+  position: absolute;
+  left: 16px;
+  top: 0;
+  width: 34px;
+  height: 34px;
+  background: var(--surface);
+  border: 2px solid var(--primary);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--primary);
+  z-index: 2;
+}
+</style>
+</head>
   <body>
+    <a href="#main-content" class="sr-only focus:not-sr-only" style="position:absolute; left:-9999px;">Skip to content</a>
     <header class="app-bar">
-      <a class="brand" href="index.html"><span class="brand-mark">C</span><span>Caresy</span></a>
+      <a class="brand" href="index.html" aria-label="Caresy home">
+      <span class="brand-mark">C</span>
+      <span style="margin-left: 6px;">Caresy</span>
+    </a>
       <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
       <nav class="main-nav" aria-label="Primary navigation">
         <a href="index.html">Home</a>
@@ -23,21 +69,59 @@
       </nav>
     </header>
 
-    <main class="page">
+    <main class="page" id="main-content">
       <section class="page-hero trust-hero reveal">
         <p class="eyebrow">Trust framework</p>
         <h1>Families need proof before they need a pitch.</h1>
         <p>Every companion must be verified and trained before assignment. The customer sees who is coming and why they can be trusted.</p>
       </section>
 
-      <section class="section trust-grid">
-        <article class="verification-card reveal"><strong>Aadhaar verification</strong><span>Identity checked before companion activation via UIDAI / Digilocker API integration.</span></article>
-        <article class="verification-card reveal delay-1"><strong>Police verification</strong><span>Conducted in partnership with AuthBridge (India's leading verification partner).</span></article>
-        <article class="verification-card reveal delay-2"><strong>Address verification</strong><span>Current residential address and family emergency contacts physically verified.</span></article>
-        <article class="verification-card reveal"><strong>Photo verification</strong><span>Customer receives a recognizable companion profile with recent photo.</span></article>
-        <article class="verification-card reveal delay-1"><strong>Training completion</strong><span>Etiquette, hospital navigation, patient coordination, and central dispatcher training.</span></article>
-        <article class="verification-card reveal delay-2"><strong>Background check</strong><span>AuthBridge screening and continuous checks completed before assignment.</span></article>
+      
+      <section class="section verification-timeline reveal">
+        <div class="timeline-item">
+          <div class="timeline-icon"><i data-lucide="fingerprint" style="width: 18px;"></i></div>
+          <article class="material-card" style="padding: 24px;">
+            <strong style="display: block; font-size: 1.2rem; color: var(--ink); margin-bottom: 8px;">1. Aadhaar verification</strong>
+            <span style="color: var(--muted); line-height: 1.5;">Identity checked before companion activation via UIDAI / Digilocker API integration.</span>
+          </article>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-icon"><i data-lucide="shield-alert" style="width: 18px;"></i></div>
+          <article class="material-card" style="padding: 24px;">
+            <strong style="display: block; font-size: 1.2rem; color: var(--ink); margin-bottom: 8px;">2. Police verification</strong>
+            <span style="color: var(--muted); line-height: 1.5;">Conducted in partnership with AuthBridge (India's leading verification partner).</span>
+          </article>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-icon"><i data-lucide="map-pin" style="width: 18px;"></i></div>
+          <article class="material-card" style="padding: 24px;">
+            <strong style="display: block; font-size: 1.2rem; color: var(--ink); margin-bottom: 8px;">3. Address verification</strong>
+            <span style="color: var(--muted); line-height: 1.5;">Current residential address and family emergency contacts physically verified.</span>
+          </article>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-icon"><i data-lucide="camera" style="width: 18px;"></i></div>
+          <article class="material-card" style="padding: 24px;">
+            <strong style="display: block; font-size: 1.2rem; color: var(--ink); margin-bottom: 8px;">4. Photo verification</strong>
+            <span style="color: var(--muted); line-height: 1.5;">Customer receives a recognizable companion profile with recent photo.</span>
+          </article>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-icon"><i data-lucide="graduation-cap" style="width: 18px;"></i></div>
+          <article class="material-card" style="padding: 24px;">
+            <strong style="display: block; font-size: 1.2rem; color: var(--ink); margin-bottom: 8px;">5. Training completion</strong>
+            <span style="color: var(--muted); line-height: 1.5;">Etiquette, hospital navigation, patient coordination, and central dispatcher training.</span>
+          </article>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-icon"><i data-lucide="shield-check" style="width: 18px;"></i></div>
+          <article class="material-card" style="padding: 24px; border-left: 4px solid var(--primary);">
+            <strong style="display: block; font-size: 1.2rem; color: var(--primary); margin-bottom: 8px;">6. Final Background check</strong>
+            <span style="color: var(--muted); line-height: 1.5;">AuthBridge screening and continuous checks completed before assignment.</span>
+          </article>
+        </div>
       </section>
+
 
       <section class="section companion-profiles-section reveal" id="companion-profiles">
         <div class="section-title">
@@ -50,15 +134,15 @@
           <!-- Profile 1: Priya Sharma -->
           <div class="profile-card material-card active" id="profile-priya" style="cursor: pointer;">
             <div class="profile-summary-header" style="display: flex; gap: 14px; align-items: center; margin-bottom: 12px;">
-              <div class="avatar"><img src="assets/caresy-companion-priya.png" alt="Priya Sharma" /></div>
+              <div class="avatar" style="border-radius: 50%; overflow: hidden; width: 64px; height: 64px; flex-shrink: 0;"><img style="width: 100%; height: 100%; object-fit: cover;" src="assets/caresy-companion-priya.png" alt="Priya Sharma" /></div>
               <div>
                 <h3 style="margin: 0; font-size: 1.2rem;">Priya Sharma</h3>
-                <span style="color: var(--muted); font-size: 0.82rem;">★ 4.9 (82 visits)</span>
+                <span style="color: var(--muted); font-size: 0.82rem; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="star" style="width: 14px; height: 14px; fill: var(--amber); stroke: var(--amber);"></i> 4.9 (82 visits)</span>
               </div>
             </div>
             <div class="profile-badges" style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;">
-              <span style="background: rgba(8, 121, 111, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700;">Aadhaar Verified</span>
-              <span style="background: rgba(8, 121, 111, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700;">Police Cleared</span>
+              <span style="background: rgba(8, 121, 111, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="check-circle" style="width: 14px; height: 14px;"></i> Aadhaar Verified</span>
+              <span style="background: rgba(8, 121, 111, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="shield-check" style="width: 14px; height: 14px;"></i> Police Cleared</span>
             </div>
             <div class="profile-expanded-details">
               <p style="font-size: 0.88rem; line-height: 1.45; margin-bottom: 12px;"><strong>Languages:</strong> Hindi, English, Punjabi</p>
@@ -70,15 +154,15 @@
           <!-- Profile 2: Anil Kumar -->
           <div class="profile-card material-card" id="profile-anil" style="cursor: pointer;">
             <div class="profile-summary-header" style="display: flex; gap: 14px; align-items: center; margin-bottom: 12px;">
-              <div class="avatar"><img src="assets/caresy-companion-anil.png" alt="Anil Kumar" /></div>
+              <div class="avatar" style="border-radius: 50%; overflow: hidden; width: 64px; height: 64px; flex-shrink: 0;"><img style="width: 100%; height: 100%; object-fit: cover;" src="assets/caresy-companion-anil.png" alt="Anil Kumar" /></div>
               <div>
                 <h3 style="margin: 0; font-size: 1.2rem;">Anil Kumar</h3>
-                <span style="color: var(--muted); font-size: 0.82rem;">★ 4.8 (120 visits)</span>
+                <span style="color: var(--muted); font-size: 0.82rem; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="star" style="width: 14px; height: 14px; fill: var(--amber); stroke: var(--amber);"></i> 4.8 (120 visits)</span>
               </div>
             </div>
             <div class="profile-badges" style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;">
-              <span style="background: rgba(8, 121, 111, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700;">Aadhaar Verified</span>
-              <span style="background: rgba(8, 121, 111, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700;">Police Cleared</span>
+              <span style="background: rgba(8, 121, 111, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="check-circle" style="width: 14px; height: 14px;"></i> Aadhaar Verified</span>
+              <span style="background: rgba(8, 121, 111, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="shield-check" style="width: 14px; height: 14px;"></i> Police Cleared</span>
             </div>
             <div class="profile-expanded-details" style="display: none;">
               <p style="font-size: 0.88rem; line-height: 1.45; margin-bottom: 12px;"><strong>Languages:</strong> Kannada, Tamil, English</p>
@@ -90,15 +174,15 @@
           <!-- Profile 3: Sarah Mathews -->
           <div class="profile-card material-card" id="profile-sarah" style="cursor: pointer;">
             <div class="profile-summary-header" style="display: flex; gap: 14px; align-items: center; margin-bottom: 12px;">
-              <div class="avatar"><img src="assets/caresy-companion-sarah.png" alt="Sarah Mathews" /></div>
+              <div class="avatar" style="border-radius: 50%; overflow: hidden; width: 64px; height: 64px; flex-shrink: 0;"><img style="width: 100%; height: 100%; object-fit: cover;" src="assets/caresy-companion-sarah.png" alt="Sarah Mathews" /></div>
               <div>
                 <h3 style="margin: 0; font-size: 1.2rem;">Sarah Mathews</h3>
-                <span style="color: var(--muted); font-size: 0.82rem;">★ 4.9 (65 visits)</span>
+                <span style="color: var(--muted); font-size: 0.82rem; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="star" style="width: 14px; height: 14px; fill: var(--amber); stroke: var(--amber);"></i> 4.9 (65 visits)</span>
               </div>
             </div>
             <div class="profile-badges" style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;">
-              <span style="background: rgba(8, 121, 111, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700;">Aadhaar Verified</span>
-              <span style="background: rgba(8, 121, 111, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700;">Police Cleared</span>
+              <span style="background: rgba(8, 121, 111, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="check-circle" style="width: 14px; height: 14px;"></i> Aadhaar Verified</span>
+              <span style="background: rgba(8, 121, 111, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="shield-check" style="width: 14px; height: 14px;"></i> Police Cleared</span>
             </div>
             <div class="profile-expanded-details" style="display: none;">
               <p style="font-size: 0.88rem; line-height: 1.45; margin-bottom: 12px;"><strong>Languages:</strong> Malayalam, Telugu, English</p>
@@ -173,7 +257,7 @@
           </div>
           <div style="display: flex; gap: 12px;">
             <a class="btn btn-primary" href="quick-help.html">Request Same-Day Dispatch</a>
-            <a class="btn btn-glass" href="booking.html" style="color: var(--primary-dark); border-color: var(--primary);">Schedule planned visit</a>
+            <a class="btn btn-outline" href="booking.html">Schedule planned visit</a>
           </div>
         </div>
       </section>
@@ -205,23 +289,26 @@
       </section>
     </main>
 
+    
+    
+    
     <footer class="footer">
       <div class="footer-container">
         <div class="footer-brand">
-          <a class="brand" href="index.html">
-            <span class="brand-mark">C</span>
-            <span>Caresy</span>
-          </a>
+          <a class="brand" href="index.html" aria-label="Caresy home">
+      <span class="brand-mark">C</span>
+      <span style="margin-left: 6px;">Caresy</span>
+    </a>
           <p class="footer-desc">
             Trusted hospital companions for elderly and vulnerable patients in India. We bridge the gap when families cannot be physically present.
           </p>
           <div class="footer-badges">
             <div class="footer-badge">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <i data-lucide="shield"></i>
               <span>Police Verified Companions</span>
             </div>
             <div class="footer-badge">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <i data-lucide="check-circle"></i>
               <span>AuthBridge Secured</span>
             </div>
           </div>
@@ -240,7 +327,6 @@
             <a href="quick-help.html">Same-Day Help</a>
             <a href="booking.html">Schedule Visit</a>
             <a href="my-bookings.html">My Bookings</a>
-            <a href="operations.html" class="ops-link">Ops Control Desk &rarr;</a>
           </div>
           <div class="footer-col">
             <h4>Legal</h4>
@@ -255,18 +341,18 @@
           <form class="footer-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing!');">
             <input type="email" placeholder="Email address" required />
             <button type="submit" aria-label="Subscribe">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              <i data-lucide="send"></i>
             </button>
           </form>
           <div class="footer-socials">
             <a href="https://wa.me/919717500225" target="_blank" rel="noopener" aria-label="WhatsApp">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.62.963 3.41 1.47 5.358 1.471h.007c5.434 0 9.858-4.42 9.861-9.852.002-2.633-1.02-5.107-2.88-6.97C17.031 1.942 14.56 .922 11.998.922 6.568.922 2.147 5.343 2.144 10.774c-.001 1.832.479 3.623 1.39 5.2l-.993 3.628 3.71-.973.006-.003zM16.7 13.9c-.3-.1-1.5-.7-1.7-.8-.2-.1-.3-.2-.5 0-.1.2-.6.8-.7.9-.1.1-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.8-.7-1.4-1.6-1.6-1.9-.2-.3 0-.4.1-.5.1-.1.3-.3.4-.4.1-.2-.2.3-.3.1-.1.1-.2 0-.4-.1-.2-.5-1.2-.7-1.7-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.1 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.5-.3z"/></svg>
+              <i data-lucide="message-circle"></i> WhatsApp
             </a>
-            <a href="#" aria-label="LinkedIn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <i data-lucide="linkedin"></i>
             </a>
-            <a href="#" aria-label="Twitter">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+            <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter">
+              <i data-lucide="twitter"></i>
             </a>
           </div>
         </div>
@@ -286,6 +372,9 @@
       </div>
     </footer>
 
+
+
+
     <!-- Floating WhatsApp Widget -->
     <a class="whatsapp-float" href="https://wa.me/919717500225" target="_blank" rel="noopener" aria-label="Chat with Caresy on WhatsApp">
       <svg class="whatsapp-icon" viewBox="0 0 24 24" width="24" height="24">
@@ -295,5 +384,13 @@
     </a>
 
     <script src="script.js"></script>
-  </body>
+  
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        if(window.lucide) {
+          window.lucide.createIcons();
+        }
+      });
+    </script>
+</body>
 </html>

@@ -624,20 +624,42 @@ if (profileCards.length > 0) {
   });
 }
 
+// Helper to backup bookings to local storage
+function saveBookingToLocalStorage(booking) {
+  try {
+    const localBookings = JSON.parse(localStorage.getItem("caresy_local_bookings") || "[]");
+    if (!localBookings.some(b => b.id === booking.id)) {
+      localBookings.push(booking);
+      localStorage.setItem("caresy_local_bookings", JSON.stringify(localBookings));
+    }
+  } catch (e) {
+    console.error("Error saving booking to localStorage:", e);
+  }
+}
+
 // ----------------------------------------------------
 // 3. Booking Form Dynamic Request Preview and Matcher
 // ----------------------------------------------------
 const bookingForm = document.querySelector("#bookingForm");
 const bookingId = document.querySelector("#bookingId");
 const bookingStatus = document.querySelector("#bookingStatus");
-
 // Form Inputs
 const inputPatientName = document.querySelector("#bookingPatientName");
 const inputHospital = document.querySelector("#bookingHospital");
 const inputDept = document.querySelector("#bookingDept");
 const selectService = document.querySelector("#bookingService");
 
-// Preview Elements
+// Pre-fill user details if logged in
+const user = window.getAuthUser ? window.getAuthUser() : null;
+if (user && user.loggedIn) {
+  const inputCustomerName = document.querySelector("input[name='customerName']");
+  const inputPhone = document.querySelector("input[name='phone']");
+  const inputEmail = document.querySelector("input[name='email']");
+  if (inputCustomerName && !inputCustomerName.value) inputCustomerName.value = user.name || "";
+  if (inputPhone && !inputPhone.value) inputPhone.value = user.phone || "";
+  if (inputEmail && !inputEmail.value) inputEmail.value = user.email || "";
+}
+
 const previewPatient = document.querySelector("#previewPatient");
 const previewHospital = document.querySelector("#previewHospital");
 const previewDept = document.querySelector("#previewDept");
@@ -737,7 +759,10 @@ function updateBookingPreview() {
 
       // Render companion details
       if (matcherName) matcherName.textContent = matchedCompanion.name;
-      if (matcherRating) matcherRating.textContent = matchedCompanion.rating;
+      if (matcherRating) {
+        matcherRating.innerHTML = `<i data-lucide="star" style="width: 14px; height: 14px; fill: var(--amber); stroke: var(--amber); display: inline-block; vertical-align: middle; margin-top: -2px; margin-right: 4px;"></i> ${matchedCompanion.rating.replace('★ ', '')}`;
+        if (window.lucide) window.lucide.createIcons();
+      }
       if (matcherAvatar) {
         matcherAvatar.textContent = matchedCompanion.avatar;
         matcherAvatar.style.background = matchedCompanion.color;
@@ -801,22 +826,39 @@ if (bookingForm) {
       .then(data => {
         if (data.success) {
           const booking = data.booking;
-          if (bookingId) {
-            bookingId.textContent = booking.id;
-          }
-          if (bookingStatus) {
-            bookingStatus.textContent = isUrgent
-              ? `Urgent call-back requested for ${booking.patientName} - ${booking.service}`
-              : `Request submitted for ${booking.patientName} - ${booking.service}`;
-          }
-          if (previewNextStep) {
-            previewNextStep.textContent = "Operations desk is verifying details. Saved to backend.";
-          }
-          bookingForm.reset();
+          saveBookingToLocalStorage(booking);
           
-          setTimeout(() => {
-            window.location.href = 'my-bookings.html';
-          }, 2000);
+          // G3: Show step-by-step confirmation
+          const successHTML = `
+            <div class="booking-success-state" style="text-align: center; padding: 40px 20px;">
+              <div style="width: 64px; height: 64px; background: var(--mint); color: var(--primary-dark); border-radius: 50%; display: grid; place-items: center; font-size: 2rem; margin: 0 auto 20px;">✓</div>
+              <h2>Booking Received</h2>
+              <p style="font-size: 1.1rem; color: var(--muted); margin-bottom: 30px;">Your reference number is <strong>${booking.id}</strong>.</p>
+              
+              <div style="text-align: left; background: var(--surface-2); padding: 20px; border-radius: 16px; margin-bottom: 30px;">
+                <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                  <span style="color: var(--primary);">1.</span>
+                  <div><strong>Booking received</strong><br><small>We have your details.</small></div>
+                </div>
+                <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                  <span style="color: var(--warning);">2.</span>
+                  <div><strong>Operations reviewing</strong><br><small>Verifying hospital and companion availability.</small></div>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                  <span style="color: var(--muted);">3.</span>
+                  <div><strong>Companion assigned</strong><br><small>Profile sent 12 hrs before visit.</small></div>
+                </div>
+              </div>
+
+              <a href="https://wa.me/919717500225?text=Hi,%20my%20booking%20reference%20is%20${booking.id}" target="_blank" class="btn btn-primary full" style="margin-bottom: 12px;">Save to WhatsApp</a>
+              <a href="my-bookings.html" class="btn btn-glass full" style="color: var(--primary);">View My Bookings</a>
+            </div>
+          `;
+          
+          const bookingLayout = document.querySelector(".booking-layout");
+          if (bookingLayout) {
+            bookingLayout.innerHTML = successHTML;
+          }
         }
       })
       .catch(err => {
@@ -836,6 +878,120 @@ if (bookingForm) {
 
   // Initialize preview on page load
   updateBookingPreview();
+}
+
+// ----------------------------------------------------
+// 3.5 Quick Help Form Submission
+// ----------------------------------------------------
+const quickHelpForm = document.querySelector("#quickHelpForm");
+if (quickHelpForm) {
+  quickHelpForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(quickHelpForm);
+    
+    // Custom Validation
+    let hasError = false;
+    quickHelpForm.querySelectorAll("input[required]").forEach(input => {
+      if (!input.value.trim()) {
+        input.style.borderColor = "var(--danger)";
+        hasError = true;
+        
+        let errorMsg = input.nextElementSibling;
+        if (!errorMsg || !errorMsg.classList.contains("error-msg")) {
+          errorMsg = document.createElement("span");
+          errorMsg.className = "error-msg";
+          errorMsg.style.color = "var(--danger)";
+          errorMsg.style.fontSize = "0.8rem";
+          errorMsg.style.display = "block";
+          errorMsg.style.marginTop = "4px";
+          input.parentNode.insertBefore(errorMsg, input.nextSibling);
+        }
+        errorMsg.textContent = "This field is required.";
+      } else {
+        input.style.borderColor = "var(--line)";
+        const errorMsg = input.nextElementSibling;
+        if (errorMsg && errorMsg.classList.contains("error-msg")) {
+          errorMsg.remove();
+        }
+      }
+    });
+
+    if (hasError) return;
+
+    const patientName = String(formData.get("patientName") || "Patient").trim();
+    const phoneVal = String(formData.get("phone") || "").trim();
+    const emailVal = String(formData.get("email") || "").trim();
+    const hospital = String(formData.get("hospital") || "").trim();
+    const notesVal = String(formData.get("notes") || "").trim();
+    const serviceVal = String(formData.get("service") || "Same-Day Hospital Companion");
+
+    const payload = {
+      patientName,
+      phone: phoneVal,
+      email: emailVal,
+      hospital,
+      notes: notesVal,
+      isUrgent: true,
+      service: serviceVal,
+      status: "Operations review needed"
+    };
+
+    fetch(`${window.API_BASE}/api/bookings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        saveBookingToLocalStorage(data.booking);
+        // Show success state
+        quickHelpForm.innerHTML = `
+          <div style="text-align: center; padding: 40px 20px;">
+            <div style="width: 64px; height: 64px; background: var(--mint); color: var(--primary-dark); border-radius: 50%; display: grid; place-items: center; font-size: 2rem; margin: 0 auto 20px;">✓</div>
+            <h2 style="margin-bottom: 12px;">Request received.</h2>
+            <p style="font-size: 1.1rem; color: var(--muted);">Our dispatcher will call <strong>${phoneVal}</strong> within 6 minutes.</p>
+            <p style="font-size: 0.9rem; color: var(--muted); margin-top: 15px;">Your reference number is <strong>${data.booking.id}</strong>.</p>
+            <div style="margin-top: 25px; display: flex; flex-direction: column; gap: 10px;">
+              <a href="https://wa.me/919717500225?text=Hi,%20my%20quick%20help%20reference%20is%20${data.booking.id}" target="_blank" class="btn btn-primary full">WhatsApp Support</a>
+              <a href="my-bookings.html" class="btn btn-glass full" style="color: var(--primary);">View My Bookings</a>
+            </div>
+          </div>
+        `;
+      }
+    })
+    .catch(err => {
+      console.error("Error creating urgent booking:", err);
+      // Fallback: save to localStorage even if the network fails
+      const mockBookingId = `CRS-${Math.floor(1000 + Math.random() * 9000)}`;
+      const offlineBooking = {
+        id: mockBookingId,
+        patientName,
+        phone: phoneVal,
+        email: emailVal,
+        hospital,
+        notes: notesVal,
+        isUrgent: true,
+        service: serviceVal,
+        status: "Offline submission - Pending sync",
+        createdAt: new Date().toISOString()
+      };
+      saveBookingToLocalStorage(offlineBooking);
+
+      quickHelpForm.innerHTML = `
+        <div style="text-align: center; padding: 40px 20px;">
+          <div style="width: 64px; height: 64px; background: var(--amber); color: var(--ink); border-radius: 50%; display: grid; place-items: center; font-size: 2rem; margin: 0 auto 20px;">✓</div>
+          <h2 style="margin-bottom: 12px;">Saved Offline</h2>
+          <p style="font-size: 1.1rem; color: var(--muted);">We saved your request offline. We will attempt to connect and sync once you are back online.</p>
+          <p style="font-size: 0.9rem; color: var(--muted); margin-top: 15px;">Your reference number is <strong>${mockBookingId}</strong>.</p>
+          <div style="margin-top: 25px; display: flex; flex-direction: column; gap: 10px;">
+            <a href="https://wa.me/919717500225?text=Hi,%20my%20offline%20help%20reference%20is%20${mockBookingId}" target="_blank" class="btn btn-primary full">WhatsApp Support</a>
+            <a href="my-bookings.html" class="btn btn-glass full" style="color: var(--primary);">View My Bookings</a>
+          </div>
+        </div>
+      `;
+    });
+  });
 }
 
 // ----------------------------------------------------

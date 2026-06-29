@@ -168,10 +168,17 @@
         opacity: 1;
       }
     </style>
-  </head>
+  
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%2308796f%22>C</text></svg>">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
   <body>
+    <a href="#main-content" class="sr-only focus:not-sr-only" style="position:absolute; left:-9999px;">Skip to content</a>
     <header class="app-bar">
-      <a class="brand" href="index.html"><span class="brand-mark">C</span><span>Caresy Ops</span></a>
+      <a class="brand" href="index.html" aria-label="Caresy home">
+      <span class="brand-mark">C</span>
+      <span style="margin-left: 6px;">Caresy Ops</span>
+    </a>
       <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
       <nav class="main-nav" aria-label="Primary navigation">
         <a href="index.html">Home</a>
@@ -180,14 +187,24 @@
       </nav>
     </header>
 
-    <main class="page admin-page">
+    <main class="page admin-page" id="main-content">
       <section class="page-hero reveal">
         <p class="eyebrow">Dispatcher Command Center</p>
         <h1>Live Operations Desk</h1>
         <p>Monitor patient incoming requests, assign companions, and push milestone progress updates to families.</p>
       </section>
 
-      <div class="admin-layout">
+      <!-- Auth Required Section -->
+      <div id="unauthSection" style="display: none;">
+        <div class="material-card reveal" style="padding: 48px 32px; text-align: center; max-width: 600px; margin: 40px auto;">
+          <div style="font-size: 3rem; margin-bottom: 16px;">🔐</div>
+          <h2>Admin Login Required</h2>
+          <p style="font-size: 1.05rem; margin-bottom: 24px;">Please sign in with an authorized ops account to access the dispatcher dashboard.</p>
+          <button class="btn btn-primary" id="unauthSignInBtn">Ops Sign In</button>
+        </div>
+      </div>
+
+      <div class="admin-layout" id="adminLayout">
         <!-- Column 1: Pending Requests -->
         <div>
           <div class="column-header">
@@ -262,6 +279,10 @@
       ];
 
       document.addEventListener("DOMContentLoaded", () => {
+        const unauthSection = document.getElementById("unauthSection");
+        const adminLayout = document.getElementById("adminLayout");
+        const unauthSignInBtn = document.getElementById("unauthSignInBtn");
+
         const pendingCol = document.getElementById("pendingCol");
         const activeCol = document.getElementById("activeCol");
         const completedCol = document.getElementById("completedCol");
@@ -280,7 +301,29 @@
           }, 3000);
         }
 
+        // Auth Guard
+        function checkAuth() {
+          const user = window.getAuthUser();
+          if (!user || !user.loggedIn) {
+            unauthSection.style.display = "block";
+            adminLayout.style.display = "none";
+            return false;
+          }
+          unauthSection.style.display = "none";
+          adminLayout.style.display = "grid";
+          return true;
+        }
+
+        if (unauthSignInBtn) {
+          unauthSignInBtn.addEventListener("click", () => {
+            window.startVerification("", "", () => {
+              if (checkAuth()) loadAllBookings();
+            });
+          });
+        }
+
         function loadAllBookings() {
+          if (!checkAuth()) return;
           fetch(`${window.API_BASE || ''}/api/admin/bookings`)
             .then(res => res.json())
             .then(data => {
@@ -428,5 +471,13 @@
         pageReveal.forEach((item) => item.classList.add("visible"));
       });
     </script>
-  </body>
+  
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        if(window.lucide) {
+          window.lucide.createIcons();
+        }
+      });
+    </script>
+</body>
 </html>

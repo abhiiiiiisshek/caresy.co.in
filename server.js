@@ -372,7 +372,7 @@ const htmlPages = [
   'terms',
   'trust',
   'my-bookings',
-  'operations'
+  'admin-ops'
 ];
 
 htmlPages.forEach(page => {

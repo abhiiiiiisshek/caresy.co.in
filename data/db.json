@@ -28,6 +28,15 @@
       "email": "demo@caresy.co",
       "name": "Ramesh Kumar",
       "phone": "9876543210"
+    },
+    "samedaytest@caresy.co": {
+      "email": "samedaytest@caresy.co",
+      "name": "Test SameDay Patient",
+      "phone": "+91 9876543210"
+    },
+    "ops@caresy.co": {
+      "email": "ops@caresy.co",
+      "name": "Ops Admin"
     }
   },
   "bookings": [
@@ -178,6 +187,34 @@
         "name": "Priya Sharma",
         "avatar": "PS",
         "rating": "★ 4.9 (82 visits)"
+      }
+    },
+    {
+      "id": "CRS-2078",
+      "patientName": "Test SameDay Patient",
+      "age": "",
+      "phone": "+91 9876543210",
+      "email": "samedaytest@caresy.co",
+      "emergency": "",
+      "hospital": "Manipal Hospital",
+      "department": "",
+      "doctor": "",
+      "date": "2026-06-29",
+      "time": "",
+      "language": "No preference",
+      "service": "Same-Day Hospital Companion",
+      "needs": [],
+      "notes": "Needs wheelchair assistance.",
+      "status": "Active",
+      "createdAt": "2026-06-29T17:08:24.366Z",
+      "companion": {
+        "name": "Anil Kumar",
+        "avatar": "AK",
+        "rating": "★ 4.8 (120 visits)",
+        "verification": "Police Verified",
+        "lang": "Kannada, Tamil, English",
+        "specialty": "Orthopedics",
+        "color": "#e77f62"
       }
     }
   ]
