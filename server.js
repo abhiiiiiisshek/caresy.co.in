@@ -26,6 +26,30 @@ if (!fs.existsSync(DB_FILE)) {
 // In-memory store for generated OTPs (phone -> otp)
 const activeOtps = new Map();
 
+// In-memory store for admin sessions (sessionToken -> email)
+const adminSessions = new Map();
+
+// Helper to parse cookies from headers
+function parseCookies(cookieHeader) {
+  const list = {};
+  if (!cookieHeader) return list;
+  cookieHeader.split(';').forEach(cookie => {
+    const parts = cookie.split('=');
+    const key = parts.shift().trim();
+    const value = parts.join('=');
+    list[key] = decodeURIComponent(value);
+  });
+  return list;
+}
+
+// Helper to get authenticated admin email from request
+function getAdminEmail(req) {
+  const cookies = parseCookies(req.headers.cookie);
+  const sessionToken = cookies['admin_session'];
+  if (!sessionToken) return null;
+  return adminSessions.get(sessionToken) || null;
+}
+
 // Helper to read database
 function readDb() {
   try {
@@ -151,6 +175,13 @@ app.post('/api/auth/verify-otp', async (req, res) => {
       user = db.users[email];
     }
 
+    // Set cookie if admin
+    if (email.endsWith('@caresy.co')) {
+      const sessionToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+      adminSessions.set(sessionToken, email);
+      res.setHeader('Set-Cookie', `admin_session=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400`);
+    }
+
     return res.json({
       success: true,
       user: {
@@ -176,6 +207,13 @@ app.post('/api/auth/verify-otp', async (req, res) => {
         db.users[email] = { email, name: '' };
         writeDb(db);
         user = db.users[email];
+      }
+
+      // Set cookie if admin
+      if (email.endsWith('@caresy.co')) {
+        const sessionToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+        adminSessions.set(sessionToken, email);
+        res.setHeader('Set-Cookie', `admin_session=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400`);
       }
 
       res.json({
@@ -319,6 +357,10 @@ app.get('/api/bookings/:id', (req, res) => {
 
 // 1. Retrieve all bookings for operations dashboard
 app.get('/api/admin/bookings', (req, res) => {
+  const email = getAdminEmail(req);
+  if (!email || !email.endsWith('@caresy.co')) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
   const db = readDb();
   const sortedBookings = [...db.bookings].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   res.json({ success: true, bookings: sortedBookings });
@@ -326,6 +368,10 @@ app.get('/api/admin/bookings', (req, res) => {
 
 // 2. Update booking status & companion assignment
 app.post('/api/admin/bookings/update', (req, res) => {
+  const email = getAdminEmail(req);
+  if (!email || !email.endsWith('@caresy.co')) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
   const { bookingId, status, companion } = req.body;
   if (!bookingId || !status) {
     return res.status(400).json({ error: 'bookingId and status are required' });
@@ -349,6 +395,17 @@ app.post('/api/admin/bookings/update', (req, res) => {
   res.json({ success: true, booking });
 });
 
+// 3. Admin/Ops Logout
+app.post('/api/auth/logout', (req, res) => {
+  const cookies = parseCookies(req.headers.cookie);
+  const sessionToken = cookies['admin_session'];
+  if (sessionToken) {
+    adminSessions.delete(sessionToken);
+  }
+  res.setHeader('Set-Cookie', 'admin_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT');
+  res.json({ success: true });
+});
+
 // ==========================================
 // Static Files Serving
 // ==========================================
@@ -359,6 +416,23 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 // Serve styles and script directly
 app.get('/styles.css', (req, res) => res.sendFile(path.join(__dirname, 'styles.css')));
 app.get('/script.js', (req, res) => res.sendFile(path.join(__dirname, 'script.js')));
+
+// Serve Gated Admin Operations page
+app.get('/admin-ops.html', (req, res) => {
+  const email = getAdminEmail(req);
+  if (!email || !email.endsWith('@caresy.co')) {
+    return res.redirect('/?login=admin');
+  }
+  res.sendFile(path.join(__dirname, 'admin-ops.html'));
+});
+
+app.get('/admin-ops', (req, res) => {
+  const email = getAdminEmail(req);
+  if (!email || !email.endsWith('@caresy.co')) {
+    return res.redirect('/?login=admin');
+  }
+  res.sendFile(path.join(__dirname, 'admin-ops.html'));
+});
 
 // Serve HTML pages
 const htmlPages = [
@@ -371,8 +445,7 @@ const htmlPages = [
   'services',
   'terms',
   'trust',
-  'my-bookings',
-  'admin-ops'
+  'my-bookings'
 ];
 
 htmlPages.forEach(page => {

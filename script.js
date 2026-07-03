@@ -1,3 +1,29 @@
+// Safe localStorage wrapper to prevent crashes in sandboxed or blocked environments
+const SafeStorage = {
+  getItem(key) {
+    try {
+      return window.localStorage.getItem(key);
+    } catch (e) {
+      console.warn("Storage access failed:", e);
+      return null;
+    }
+  },
+  setItem(key, value) {
+    try {
+      window.localStorage.setItem(key, value);
+    } catch (e) {
+      console.warn("Storage access failed:", e);
+    }
+  },
+  removeItem(key) {
+    try {
+      window.localStorage.removeItem(key);
+    } catch (e) {
+      console.warn("Storage access failed:", e);
+    }
+  }
+};
+
 // Determine backend API base URL
 const API_BASE = (function() {
   const loc = window.location;
@@ -112,7 +138,7 @@ document.querySelectorAll(".main-nav a").forEach((link) => {
   // Auth helper methods
   window.getAuthUser = function() {
     try {
-      const data = localStorage.getItem("caresy_auth");
+      const data = SafeStorage.getItem("caresy_auth");
       return data ? JSON.parse(data) : null;
     } catch (e) {
       return null;
@@ -120,12 +146,14 @@ document.querySelectorAll(".main-nav a").forEach((link) => {
   };
 
   window.setAuthUser = function(user) {
-    localStorage.setItem("caresy_auth", JSON.stringify({ ...user, loggedIn: true }));
+    SafeStorage.setItem("caresy_auth", JSON.stringify({ ...user, loggedIn: true }));
     updateHeaderAuth();
   };
 
   window.logoutUser = function() {
-    localStorage.removeItem("caresy_auth");
+    SafeStorage.removeItem("caresy_auth");
+    fetch('/api/auth/logout', { method: 'POST' })
+      .catch(err => console.error('Error logging out from server:', err));
     updateHeaderAuth();
     if (window.location.pathname.includes("booking.html") || window.location.pathname.includes("quick-help.html") || window.location.pathname.includes("my-bookings.html")) {
       window.location.reload();
@@ -627,10 +655,10 @@ if (profileCards.length > 0) {
 // Helper to backup bookings to local storage
 function saveBookingToLocalStorage(booking) {
   try {
-    const localBookings = JSON.parse(localStorage.getItem("caresy_local_bookings") || "[]");
+    const localBookings = JSON.parse(SafeStorage.getItem("caresy_local_bookings") || "[]");
     if (!localBookings.some(b => b.id === booking.id)) {
       localBookings.push(booking);
-      localStorage.setItem("caresy_local_bookings", JSON.stringify(localBookings));
+      SafeStorage.setItem("caresy_local_bookings", JSON.stringify(localBookings));
     }
   } catch (e) {
     console.error("Error saving booking to localStorage:", e);
@@ -680,6 +708,7 @@ const companionDatabase = {
   cardiology: {
     name: "Priya Sharma",
     avatar: "PS",
+    photo: "assets/caresy-companion-priya.png",
     rating: "★ 4.9 (82 visits)",
     verification: "Police Verified",
     lang: "Hindi, English",
@@ -689,6 +718,7 @@ const companionDatabase = {
   orthopedics: {
     name: "Anil Kumar",
     avatar: "AK",
+    photo: "assets/caresy-companion-anil.png",
     rating: "★ 4.8 (120 visits)",
     verification: "Police Verified",
     lang: "Kannada, Tamil, English",
@@ -698,6 +728,7 @@ const companionDatabase = {
   general: {
     name: "Sarah Mathews",
     avatar: "SM",
+    photo: "assets/caresy-companion-sarah.png",
     rating: "★ 4.9 (65 visits)",
     verification: "Police Verified",
     lang: "Malayalam, Telugu, English",
@@ -764,8 +795,13 @@ function updateBookingPreview() {
         if (window.lucide) window.lucide.createIcons();
       }
       if (matcherAvatar) {
-        matcherAvatar.textContent = matchedCompanion.avatar;
-        matcherAvatar.style.background = matchedCompanion.color;
+        if (matchedCompanion.photo) {
+          matcherAvatar.innerHTML = `<img style="width: 100%; height: 100%; object-fit: cover;" src="${matchedCompanion.photo}" alt="${matchedCompanion.name}" />`;
+          matcherAvatar.style.background = "transparent";
+        } else {
+          matcherAvatar.textContent = matchedCompanion.avatar;
+          matcherAvatar.style.background = matchedCompanion.color;
+        }
       }
       if (matcherLang) matcherLang.textContent = matchedCompanion.lang;
       if (matcherSpecialty) matcherSpecialty.textContent = matchedCompanion.specialty;
@@ -997,7 +1033,7 @@ if (quickHelpForm) {
 // ----------------------------------------------------
 // 4. Premium Interactive Legal Pages Logic
 // ----------------------------------------------------
-document.addEventListener("DOMContentLoaded", () => {
+function initLegalSearch() {
   const legalSections = document.querySelectorAll(".legal-section");
   const tocLinks = document.querySelectorAll(".legal-toc-link");
   const searchInput = document.getElementById("legalSearch");
@@ -1071,43 +1107,49 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // Highlight text matching searchTerm
+    // Highlight text matching searchTerm (preserves HTML tags/structure)
     const highlightElementText = (element, searchTerm) => {
-      const text = element.textContent;
       const termLower = searchTerm.toLowerCase();
-      const index = text.toLowerCase().indexOf(termLower);
-
-      if (index === -1) return;
-
-      const spanContainer = document.createElement("span");
-      let remainingText = text;
-
-      while (true) {
-        const matchIdx = remainingText.toLowerCase().indexOf(termLower);
-        if (matchIdx === -1) {
-          if (remainingText) {
-            spanContainer.appendChild(document.createTextNode(remainingText));
+      
+      const walk = (node) => {
+        if (node.nodeType === 3) { // Text node
+          const text = node.nodeValue;
+          const index = text.toLowerCase().indexOf(termLower);
+          if (index !== -1) {
+            const parent = node.parentNode;
+            if (parent && parent.className !== 'highlight') {
+              const spanContainer = document.createElement("span");
+              let remainingText = text;
+              while (true) {
+                const matchIdx = remainingText.toLowerCase().indexOf(termLower);
+                if (matchIdx === -1) {
+                  if (remainingText) {
+                    spanContainer.appendChild(document.createTextNode(remainingText));
+                  }
+                  break;
+                }
+                const prefix = remainingText.substring(0, matchIdx);
+                const match = remainingText.substring(matchIdx, matchIdx + searchTerm.length);
+                if (prefix) {
+                  spanContainer.appendChild(document.createTextNode(prefix));
+                }
+                const highlightSpan = document.createElement("span");
+                highlightSpan.className = "highlight";
+                highlightSpan.appendChild(document.createTextNode(match));
+                spanContainer.appendChild(highlightSpan);
+                remainingText = remainingText.substring(matchIdx + searchTerm.length);
+              }
+              parent.replaceChild(spanContainer, node);
+            }
           }
-          break;
+        } else if (node.nodeType === 1 && node.childNodes && !node.classList.contains('highlight')) {
+          // Element node: walk children recursively
+          const children = Array.from(node.childNodes);
+          children.forEach(walk);
         }
+      };
 
-        const prefix = remainingText.substring(0, matchIdx);
-        const match = remainingText.substring(matchIdx, matchIdx + searchTerm.length);
-
-        if (prefix) {
-          spanContainer.appendChild(document.createTextNode(prefix));
-        }
-
-        const highlightSpan = document.createElement("span");
-        highlightSpan.className = "highlight";
-        highlightSpan.appendChild(document.createTextNode(match));
-        spanContainer.appendChild(highlightSpan);
-
-        remainingText = remainingText.substring(matchIdx + searchTerm.length);
-      }
-
-      element.innerHTML = "";
-      element.appendChild(spanContainer);
+      walk(element);
     };
 
     searchInput.addEventListener("input", () => {
@@ -1167,5 +1209,336 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-});
+}
+
+// ----------------------------------------------------
+// 5. Shared Dynamic Navigation & Footer Components
+// ----------------------------------------------------
+function injectNavigation() {
+  const isOpsPage = window.location.pathname.includes("admin-ops");
+  if (isOpsPage) return;
+
+  const appBar = document.querySelector(".app-bar");
+  if (!appBar) return;
+  
+  const path = window.location.pathname;
+  const page = path.split("/").pop() || "index.html";
+  
+  const isHome = page === "index.html" || page === "index" || page === "";
+  const isServices = page === "services.html" || page === "services";
+  const isTrust = page === "trust.html" || page === "trust";
+  const isQuickHelp = page === "quick-help.html" || page === "quick-help";
+  const isBooking = page === "booking.html" || page === "booking";
+  
+  appBar.innerHTML = `
+    <a class="brand" href="index.html" aria-label="Caresy home">
+      <span class="brand-mark">C</span>
+      <span class="brand-text">Caresy</span>
+    </a>
+    <div class="header-actions">
+      <a class="nav-quick \${isQuickHelp ? 'active' : ''}" href="quick-help.html">
+        <span class="desktop-text">Need help today</span>
+        <span class="mobile-text">Need Help</span>
+      </a>
+      <a class="nav-cta \${isBooking ? 'active' : ''}" href="booking.html">
+        <span class="desktop-text">Book for later</span>
+        <span class="mobile-text">Book Later</span>
+      </a>
+    </div>
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="main-nav" aria-label="Primary navigation">
+      <a class="\${isHome ? 'active' : ''}" href="index.html">Home</a>
+      <a class="\${isServices ? 'active' : ''}" href="services.html">Services</a>
+      <a class="\${isTrust ? 'active' : ''}" href="trust.html">Trust</a>
+      <a class="nav-quick desktop-only \${isQuickHelp ? 'active' : ''}" href="quick-help.html">Need help today</a>
+      <a class="nav-cta desktop-only \${isBooking ? 'active' : ''}" href="booking.html">Book for later</a>
+    </nav>
+  `;
+  
+  // Re-attach toggle listener
+  const toggle = appBar.querySelector(".nav-toggle");
+  if (toggle) {
+    toggle.addEventListener("click", () => {
+      const isOpen = document.body.classList.toggle("nav-open");
+      toggle.setAttribute("aria-expanded", String(isOpen));
+    });
+  }
+  
+  appBar.querySelectorAll(".main-nav a").forEach((link) => {
+    link.addEventListener("click", () => {
+      document.body.classList.remove("nav-open");
+      toggle?.setAttribute("aria-expanded", "false");
+    });
+  });
+
+  // Re-run header auth widget
+  if (window.updateHeaderAuth) {
+    window.updateHeaderAuth();
+  }
+}
+
+function injectFooter() {
+  const isOpsPage = window.location.pathname.includes("admin-ops");
+  if (isOpsPage) return;
+
+  const footer = document.querySelector(".footer");
+  if (!footer) return;
+
+  footer.innerHTML = `
+    <div class="footer-container">
+      <div class="footer-brand">
+        <a class="brand" href="index.html" aria-label="Caresy home">
+          <span class="brand-mark">C</span>
+          <span class="brand-text">Caresy</span>
+        </a>
+        <p class="footer-desc">
+          Trusted hospital companions for elderly and vulnerable patients in India. We bridge the gap when families cannot be physically present.
+        </p>
+        <div class="footer-badges">
+          <div class="footer-badge">
+            <i data-lucide="shield"></i>
+            <span>Police Verified Companions</span>
+          </div>
+          <div class="footer-badge">
+            <i data-lucide="check-circle"></i>
+            <span>AuthBridge Secured</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="about.html">About Us</a>
+          <a href="services.html">Our Services</a>
+          <a href="trust.html">Trust Framework</a>
+          <a href="faq.html">FAQs & Coverage</a>
+        </div>
+        <div class="footer-col">
+          <h4>Need Care?</h4>
+          <a href="quick-help.html">Same-Day Help</a>
+          <a href="booking.html">Schedule Visit</a>
+          <a href="my-bookings.html">My Bookings</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+        </div>
+      </div>
+
+      <div class="footer-newsletter">
+        <h4>Stay Connected</h4>
+        <p>Get tips and guides on caring for aging family members.</p>
+        <form class="footer-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing!');">
+          <input type="email" placeholder="Email address" required />
+          <button type="submit" aria-label="Subscribe">
+            <i data-lucide="send"></i>
+          </button>
+        </form>
+        <div class="footer-socials">
+          <a href="https://wa.me/919717500225" target="_blank" rel="noopener" aria-label="WhatsApp">
+            <i data-lucide="message-circle"></i> WhatsApp
+          </a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <i data-lucide="linkedin"></i>
+          </a>
+          <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter">
+            <i data-lucide="twitter"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <div class="footer-bottom-container">
+        <p class="copyright">&copy; 2026 Caresy Care Services Pvt. Ltd. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <span class="footer-address-mini">4th Floor, Sector 7, HSR Layout, Bengaluru, KA 560102</span>
+          <span class="footer-divider">|</span>
+          <a href="tel:+919717500225">+91 97175 00225</a>
+          <span class="footer-divider">|</span>
+          <a href="mailto:support@caresy.co">support@caresy.co</a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ----------------------------------------------------
+// 6. DPDP Act 2023 Compliant Cookie Banner
+// ----------------------------------------------------
+function initCookieBanner() {
+  if (SafeStorage.getItem("cookieConsent")) return;
+
+  const banner = document.createElement("div");
+  banner.className = "cookie-banner";
+  banner.innerHTML = `
+    <h3 class="cookie-banner-title">
+      <i data-lucide="cookie" style="color: var(--primary); width: 20px; height: 20px;"></i>
+      Cookie Consent
+    </h3>
+    <p class="cookie-banner-text">
+      In compliance with the DPDP Act 2023, we request your consent to use cookies for analyzing web traffic and optimizing your companion coordination experience. Read our <a href="privacy.html" style="color: var(--primary); text-decoration: underline;">Privacy Policy</a>.
+    </p>
+    <div class="cookie-banner-preferences" id="cookiePrefs" style="display: none; flex-direction: column; gap: 8px; margin: 12px 0; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: rgba(0,0,0,0.02); font-size: 0.82rem;">
+      <label style="display: flex; align-items: center; gap: 8px; font-weight: 600;">
+        <input type="checkbox" checked disabled /> Essential Cookies (Required)
+      </label>
+      <label style="display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" id="prefAnalytics" checked /> Analytics & Performance
+      </label>
+      <label style="display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" id="prefPersonalization" checked /> Personalization
+      </label>
+    </div>
+    <div class="cookie-banner-buttons" style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <button class="btn btn-primary" id="btnAcceptCookies" style="min-height: 38px; padding: 8px 16px; font-size: 0.88rem; border-radius: 12px; flex: 1;">Accept All</button>
+      <button class="btn btn-outline" id="btnDeclineCookies" style="min-height: 38px; padding: 8px 16px; font-size: 0.88rem; border-radius: 12px; flex: 1;">Reject All</button>
+      <button class="btn btn-outline" id="btnManageCookies" style="min-height: 38px; padding: 8px 16px; font-size: 0.88rem; border-radius: 12px; flex-basis: 100%;">Manage Preferences</button>
+      <button class="btn btn-primary" id="btnSaveCookiePrefs" style="min-height: 38px; padding: 8px 16px; font-size: 0.88rem; border-radius: 12px; flex-basis: 100%; display: none;">Save Choices</button>
+    </div>
+  `;
+
+  document.body.appendChild(banner);
+
+  // Initialize Lucide icons within the dynamically created banner
+  if (window.lucide) {
+    window.lucide.createIcons({
+      attrs: {
+        class: 'lucide'
+      },
+      nameAttr: 'data-lucide',
+      nodeList: banner.querySelectorAll('[data-lucide]')
+    });
+  }
+
+  setTimeout(() => {
+    banner.classList.add("show");
+  }, 100);
+
+  const btnManage = document.getElementById("btnManageCookies");
+  const btnSave = document.getElementById("btnSaveCookiePrefs");
+  const prefsDiv = document.getElementById("cookiePrefs");
+
+  btnManage.addEventListener("click", () => {
+    prefsDiv.style.display = "flex";
+    btnManage.style.display = "none";
+    btnSave.style.display = "block";
+  });
+
+  document.getElementById("btnAcceptCookies").addEventListener("click", () => {
+    SafeStorage.setItem("cookieConsent", JSON.stringify({ essential: true, analytics: true, personalization: true }));
+    banner.classList.remove("show");
+    setTimeout(() => banner.remove(), 400);
+  });
+
+  document.getElementById("btnDeclineCookies").addEventListener("click", () => {
+    SafeStorage.setItem("cookieConsent", JSON.stringify({ essential: true, analytics: false, personalization: false }));
+    banner.classList.remove("show");
+    setTimeout(() => banner.remove(), 400);
+  });
+
+  btnSave.addEventListener("click", () => {
+    const analytics = document.getElementById("prefAnalytics").checked;
+    const personalization = document.getElementById("prefPersonalization").checked;
+    SafeStorage.setItem("cookieConsent", JSON.stringify({ essential: true, analytics, personalization }));
+    banner.classList.remove("show");
+    setTimeout(() => banner.remove(), 400);
+  });
+}
+
+// ----------------------------------------------------
+// 7. Dynamic Operations Desk Stats Updates
+// ----------------------------------------------------
+function initDispatcherStatus() {
+  const statusBanners = document.querySelectorAll(".dispatcher-status-banner");
+  if (statusBanners.length === 0) return;
+
+  const updateStatus = () => {
+    const callbackMin = 4 + Math.floor(Math.random() * 5); // 4-8 mins
+    const companions = 5 + Math.floor(Math.random() * 7); // 5-11 online
+
+    statusBanners.forEach((banner) => {
+      const p = banner.querySelector("p");
+      if (p) {
+        p.innerHTML = `Desk Status: <strong style="color: #27a875;">Active</strong> &bull; Estimated Callback: <strong>${callbackMin} mins</strong> &bull; Nearby Companions: <strong>${companions} online</strong>`;
+      }
+    });
+  };
+
+  updateStatus();
+  setInterval(updateStatus, 15000); // update every 15 seconds
+}
+
+// ----------------------------------------------------
+// 7.5 Centralized Stats Sync (CF-006)
+// ----------------------------------------------------
+const CARESY_STATS = {
+  companions: "1,200+",
+  visits: "5,000+"
+};
+
+function updateDynamicStats() {
+  const companionStats = document.querySelectorAll('[data-stat="companions"]');
+  const visitStats = document.querySelectorAll('[data-stat="visits"]');
+  
+  companionStats.forEach(el => {
+    if (el.tagName === 'STRONG' && el.textContent.includes('Verified')) {
+      el.textContent = `${CARESY_STATS.companions} Verified Companions`;
+    } else {
+      el.textContent = CARESY_STATS.companions;
+    }
+  });
+
+  visitStats.forEach(el => {
+    if (el.tagName === 'STRONG' && (el.textContent.includes('Visits') || el.textContent.includes('Completed'))) {
+      el.textContent = `${CARESY_STATS.visits} Completed Visits`;
+    } else {
+      el.textContent = CARESY_STATS.visits;
+    }
+  });
+}
+
+// ----------------------------------------------------
+// 8. Global Feature Bootstrapper
+// ----------------------------------------------------
+function initGlobalFeatures() {
+  injectNavigation();
+  injectFooter();
+  initCookieBanner();
+  initDispatcherStatus();
+  initLegalSearch();
+  updateDynamicStats();
+
+  // Re-initialize Lucide Icons on final generated DOM
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+
+  // Auto-open sign in modal if URL parameters request it
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('login') === 'admin' || urlParams.get('login') === '1') {
+    const defaultEmail = urlParams.get('login') === 'admin' ? 'ops@caresy.co' : '';
+    setTimeout(() => {
+      window.startVerification(defaultEmail, "", () => {
+        if (defaultEmail) {
+          window.location.href = 'admin-ops.html';
+        } else {
+          window.location.reload();
+        }
+      });
+    }, 500);
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initGlobalFeatures);
+} else {
+  initGlobalFeatures();
+}
+
 

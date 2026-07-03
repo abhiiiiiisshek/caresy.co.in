@@ -54,20 +54,7 @@
 </head>
   <body>
     <a href="#main-content" class="sr-only focus:not-sr-only" style="position:absolute; left:-9999px;">Skip to content</a>
-    <header class="app-bar">
-      <a class="brand" href="index.html" aria-label="Caresy home">
-      <span class="brand-mark">C</span>
-      <span style="margin-left: 6px;">Caresy</span>
-    </a>
-      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
-      <nav class="main-nav" aria-label="Primary navigation">
-        <a href="index.html">Home</a>
-        <a href="services.html">Services</a>
-        <a class="active" href="trust.html">Trust</a>
-        <a class="nav-quick" href="quick-help.html">Need help today</a>
-        <a class="nav-cta" href="booking.html">Book for later</a>
-      </nav>
-    </header>
+    <header class="app-bar"></header>
 
     <main class="page" id="main-content">
       <section class="page-hero trust-hero reveal">
@@ -218,11 +205,11 @@
 
         <div class="trust-stats-bar" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; text-align: center; margin-bottom: 48px;">
           <div class="stat-item material-card" style="background: rgba(231, 243, 237, 0.4);">
-            <strong style="display: block; font-size: 2.2rem; color: var(--primary);">5,000+</strong>
+            <strong data-stat="visits" style="display: block; font-size: 2.2rem; color: var(--primary);">5,000+</strong>
             <span style="font-size: 0.9rem; color: var(--muted);">Visits Completed</span>
           </div>
           <div class="stat-item material-card" style="background: rgba(231, 243, 237, 0.4);">
-            <strong style="display: block; font-size: 2.2rem; color: var(--primary);">1,200+</strong>
+            <strong data-stat="companions" style="display: block; font-size: 2.2rem; color: var(--primary);">1,200+</strong>
             <span style="font-size: 0.9rem; color: var(--muted);">Companions Verified</span>
           </div>
           <div class="stat-item material-card" style="background: rgba(231, 243, 237, 0.4);">
@@ -289,6 +276,7 @@
       </section>
     </main>
 
+    
     
     
     
@@ -375,6 +363,7 @@
 
 
 
+
     <!-- Floating WhatsApp Widget -->
     <a class="whatsapp-float" href="https://wa.me/919717500225" target="_blank" rel="noopener" aria-label="Chat with Caresy on WhatsApp">
       <svg class="whatsapp-icon" viewBox="0 0 24 24" width="24" height="24">
@@ -385,6 +374,8 @@
 
     <script src="script.js"></script>
   
+
+
     <script>
       document.addEventListener("DOMContentLoaded", function() {
         if(window.lucide) {

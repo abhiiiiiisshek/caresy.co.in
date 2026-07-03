@@ -19,23 +19,7 @@
 
 <body>
   <a href="#main-content" class="sr-only focus:not-sr-only" style="position:absolute; left:-9999px;">Skip to content</a>
-  <header class="app-bar">
-    <a class="brand" href="index.html" aria-label="Caresy home">
-      <span class="brand-mark">C</span>
-      <span style="margin-left: 6px;">Caresy</span>
-    </a>
-    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
-      <span></span>
-      <span></span>
-    </button>
-    <nav class="main-nav" aria-label="Primary navigation">
-      <a class="active" href="index.html">Home</a>
-      <a href="services.html">Services</a>
-      <a href="trust.html">Trust</a>
-      <a class="nav-cta" href="quick-help.html">Need help today</a>
-      <a class="nav-quick" href="booking.html" style="background: transparent; color: var(--primary-dark); border: 1px solid var(--primary-dark);">Book for later</a>
-    </nav>
-  </header>
+  <header class="app-bar"></header>
 
   <main id="main-content">
     <section class="home-hero">
@@ -79,12 +63,12 @@
     <section class="proof-bar" aria-label="Trust proof">
       <div class="proof-item reveal">
         <i data-lucide="shield-check" class="proof-icon" style="color: var(--primary); width: 32px; height: 32px;"></i>
-        <strong>1,200+ Verified Companions</strong>
+        <strong data-stat="companions">1,200+ Verified Companions</strong>
         <span>100% background checked via Aadhaar & police clearance before activation by AuthBridge.</span>
       </div>
       <div class="proof-item reveal delay-1">
         <i data-lucide="trending-up" class="proof-icon" style="color: var(--primary); width: 32px; height: 32px;"></i>
-        <strong>500+ Completed Visits</strong>
+        <strong data-stat="visits">500+ Completed Visits</strong>
         <span>Real-time milestone updates and live timeline visibility for every family.</span>
       </div>
       <div class="proof-item reveal delay-2">
@@ -95,7 +79,7 @@
     </section>
 
     <section class="section visual-showcase-section">
-      <div class="split" style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center;">
+      <div class="split visual-showcase-split-1">
         <div class="reveal">
           <p class="section-kicker">Compassionate Care in Action</p>
           <h2>A friend at the hospital when you can't be there.</h2>
@@ -105,7 +89,7 @@
           </p>
           <div style="display: flex; gap: 16px; flex-wrap: wrap;">
             <a class="btn btn-primary" href="services.html">See Service Details</a>
-            <a class="btn btn-glass" href="trust.html">Our Security Standards</a>
+            <a class="btn btn-outline" href="trust.html">Our Security Standards</a>
           </div>
         </div>
         <div class="reveal delay-1" style="position: relative;">
@@ -280,8 +264,7 @@
 
     <section class="section visual-showcase-section"
       style="background: var(--surface-2); border-radius: 30px; border: 1px solid var(--line); margin: 60px auto;">
-      <div class="split"
-        style="display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 40px; align-items: center; padding: 20px;">
+      <div class="split visual-showcase-split-2">
         <div class="reveal style-order-mobile-2" style="display: flex; justify-content: center;">
           <img src="assets/caresy-family-app.png"
             alt="Smartphone displaying the Caresy live care journey timeline updates" width="380" height="380"
@@ -453,6 +436,7 @@
 
   
     
+    
     <footer class="footer">
       <div class="footer-container">
         <div class="footer-brand">
@@ -536,6 +520,7 @@
 
 
 
+
   <!-- Floating WhatsApp Widget -->
   <a class="whatsapp-float" href="https://wa.me/919717500225" target="_blank" rel="noopener"
     aria-label="Chat with Caresy on WhatsApp">
@@ -548,13 +533,15 @@
 
   <script src="script.js"></script>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      if (window.lucide) {
-        window.lucide.createIcons();
-      }
-    });
-  </script>
+
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        if(window.lucide) {
+          window.lucide.createIcons();
+        }
+      });
+    </script>
 </body>
 
 </html>

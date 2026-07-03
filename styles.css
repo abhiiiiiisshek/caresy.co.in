@@ -213,6 +213,21 @@ textarea {
   color: var(--surface);
 }
 
+.header-actions {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.mobile-text {
+  display: none;
+}
+
+.desktop-text {
+  display: inline;
+}
+
 .nav-toggle {
   display: none;
   width: 44px;
@@ -680,6 +695,21 @@ p {
   align-items: start;
 }
 
+.visual-showcase-split-1 {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.visual-showcase-split-2 {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 40px;
+  align-items: center;
+  padding: 20px;
+}
+
 .section-title {
   position: sticky;
   top: 118px;
@@ -774,6 +804,12 @@ p {
 
 .teaser-grid {
   grid-template-columns: repeat(3, 1fr);
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 .teaser-card {
@@ -1487,11 +1523,34 @@ th {
     display: block;
   }
 
+  .header-actions {
+    display: flex;
+  }
+
+  .header-actions a {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-weight: 750;
+  }
+
+  .header-actions .nav-quick {
+    background: rgba(231, 127, 98, 0.12);
+    color: #9b432d;
+  }
+
+  .header-actions .nav-cta {
+    background: linear-gradient(135deg, var(--primary), #0ba48f);
+    color: var(--surface);
+    box-shadow: 0 4px 12px rgba(29, 113, 105, 0.15);
+  }
+
   .main-nav {
-    position: fixed;
-    top: 72px;
-    right: 14px;
-    left: 14px;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    left: 0;
+    width: auto;
     display: none;
     flex-direction: column;
     align-items: stretch;
@@ -1510,6 +1569,11 @@ th {
   .main-nav .nav-cta {
     margin: 0;
     padding: 14px;
+    min-height: 44px;
+  }
+
+  .main-nav .desktop-only {
+    display: none !important;
   }
 
   .home-hero {
@@ -1561,19 +1625,22 @@ th {
   .metric-grid,
   .ops-layout,
   .status-lane,
-  .teaser-grid {
+  .teaser-grid,
+  .pricing-grid {
     grid-template-columns: 1fr;
   }
 
   .proof-bar {
     margin-top: 0;
     padding: 0;
+    gap: 16px;
   }
 
-  .proof-item,
-  .proof-item:first-child,
-  .proof-item:last-child {
-    border-radius: 0;
+  .visual-showcase-split-1,
+  .visual-showcase-split-2 {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 10px;
   }
 
   .section,
@@ -1616,6 +1683,14 @@ th {
   .app-bar {
     top: 10px;
     width: calc(100% - 20px);
+  }
+
+  .desktop-text {
+    display: none;
+  }
+
+  .mobile-text {
+    display: inline;
   }
 
   .home-hero {
@@ -1673,6 +1748,26 @@ th {
   th,
   td {
     padding: 10px 6px;
+  }
+
+  .whatsapp-float {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    right: 16px;
+    padding: 0;
+    width: 56px;
+    height: 56px;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  .whatsapp-float span {
+    display: none;
+  }
+}
+
+@media (max-width: 500px) {
+  .brand-text {
+    display: none;
   }
 }
 
@@ -2547,4 +2642,86 @@ th {
   letter-spacing: 0.05em;
 }
 
+/* ==========================================
+   J5: Cookie Consent Banner
+   ========================================== */
+.cookie-banner {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  max-width: 450px;
+  background: rgba(255, 253, 248, 0.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow-2);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  backdrop-filter: blur(14px);
+  transform: translateY(150px);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+}
 
+.cookie-banner.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.cookie-banner-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cookie-banner-text {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.cookie-banner-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .cookie-banner {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    padding: 20px;
+  }
+}
+
+/* ==========================================
+   J6: Tag Cloud pills
+   ========================================== */
+.tag-pill {
+  background: var(--surface-2);
+  color: var(--primary-dark);
+  padding: 10px 20px;
+  border-radius: 99px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid rgba(8, 121, 111, 0.15);
+  box-shadow: var(--shadow-1);
+  transition: all 0.2s ease;
+  cursor: default;
+  display: inline-block;
+}
+
+.tag-pill:hover {
+  background: var(--primary);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+}
