@@ -1219,64 +1219,97 @@ function injectNavigation() {
   if (isOpsPage) return;
 
   const appBar = document.querySelector(".app-bar");
-  if (!appBar) return;
-  
-  const path = window.location.pathname;
-  const page = path.split("/").pop() || "index.html";
-  
-  const isHome = page === "index.html" || page === "index" || page === "";
-  const isServices = page === "services.html" || page === "services";
-  const isTrust = page === "trust.html" || page === "trust";
-  const isQuickHelp = page === "quick-help.html" || page === "quick-help";
-  const isBooking = page === "booking.html" || page === "booking";
-  
-  appBar.innerHTML = `
-    <a class="brand" href="index.html" aria-label="Caresy home">
-      <span class="brand-mark">C</span>
-      <span class="brand-text">Caresy</span>
-    </a>
-    <div class="header-actions">
-      <a class="nav-quick \${isQuickHelp ? 'active' : ''}" href="quick-help.html">
-        <span class="desktop-text">Need help today</span>
-        <span class="mobile-text">Need Help</span>
+  if (appBar) {
+    const path = window.location.pathname;
+    const page = path.split("/").pop() || "index.html";
+    
+    const isHome = page === "index.html" || page === "index" || page === "";
+    const isServices = page === "services.html" || page === "services";
+    const isTrust = page === "trust.html" || page === "trust";
+    const isQuickHelp = page === "quick-help.html" || page === "quick-help";
+    const isBooking = page === "booking.html" || page === "booking";
+    const isTrack = page === "my-bookings.html" || page === "my-bookings";
+    
+    appBar.innerHTML = `
+      <a class="brand" href="index.html" aria-label="Caresy home">
+        <span class="brand-mark">C</span>
+        <span class="brand-text">Caresy</span>
       </a>
-      <a class="nav-cta \${isBooking ? 'active' : ''}" href="booking.html">
-        <span class="desktop-text">Book for later</span>
-        <span class="mobile-text">Book Later</span>
-      </a>
-    </div>
-    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
-      <span></span>
-      <span></span>
-    </button>
-    <nav class="main-nav" aria-label="Primary navigation">
-      <a class="\${isHome ? 'active' : ''}" href="index.html">Home</a>
-      <a class="\${isServices ? 'active' : ''}" href="services.html">Services</a>
-      <a class="\${isTrust ? 'active' : ''}" href="trust.html">Trust</a>
-      <a class="nav-quick desktop-only \${isQuickHelp ? 'active' : ''}" href="quick-help.html">Need help today</a>
-      <a class="nav-cta desktop-only \${isBooking ? 'active' : ''}" href="booking.html">Book for later</a>
-    </nav>
-  `;
-  
-  // Re-attach toggle listener
-  const toggle = appBar.querySelector(".nav-toggle");
-  if (toggle) {
-    toggle.addEventListener("click", () => {
-      const isOpen = document.body.classList.toggle("nav-open");
-      toggle.setAttribute("aria-expanded", String(isOpen));
+      <div class="header-actions">
+        <a class="nav-quick ${isQuickHelp ? 'active' : ''}" href="quick-help.html">
+          <span class="desktop-text">Need help today</span>
+          <span class="mobile-text">Need Help</span>
+        </a>
+        <a class="nav-cta ${isBooking ? 'active' : ''}" href="booking.html">
+          <span class="desktop-text">Book for later</span>
+          <span class="mobile-text">Book Later</span>
+        </a>
+      </div>
+      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a class="${isHome ? 'active' : ''}" href="index.html">Home</a>
+        <a class="${isServices ? 'active' : ''}" href="services.html">Services</a>
+        <a class="${isTrust ? 'active' : ''}" href="trust.html">Trust</a>
+        <a class="nav-quick desktop-only ${isQuickHelp ? 'active' : ''}" href="quick-help.html">Need help today</a>
+        <a class="nav-cta desktop-only ${isBooking ? 'active' : ''}" href="booking.html">Book for later</a>
+      </nav>
+    `;
+    
+    // Re-attach toggle listener
+    const toggle = appBar.querySelector(".nav-toggle");
+    if (toggle) {
+      toggle.addEventListener("click", () => {
+        const isOpen = document.body.classList.toggle("nav-open");
+        toggle.setAttribute("aria-expanded", String(isOpen));
+      });
+    }
+    
+    appBar.querySelectorAll(".main-nav a").forEach((link) => {
+      link.addEventListener("click", () => {
+        document.body.classList.remove("nav-open");
+        toggle?.setAttribute("aria-expanded", "false");
+      });
     });
-  }
-  
-  appBar.querySelectorAll(".main-nav a").forEach((link) => {
-    link.addEventListener("click", () => {
-      document.body.classList.remove("nav-open");
-      toggle?.setAttribute("aria-expanded", "false");
-    });
-  });
 
-  // Re-run header auth widget
-  if (window.updateHeaderAuth) {
-    window.updateHeaderAuth();
+    // Re-run header auth widget
+    if (window.updateHeaderAuth) {
+      window.updateHeaderAuth();
+    }
+    
+    // Inject mobile bottom nav dynamically if not present
+    let bottomNav = document.querySelector(".mobile-bottom-nav");
+    if (!bottomNav) {
+      bottomNav = document.createElement("nav");
+      bottomNav.className = "mobile-bottom-nav";
+      bottomNav.setAttribute("aria-label", "Mobile navigation");
+      document.body.appendChild(bottomNav);
+    }
+    
+    bottomNav.innerHTML = `
+      <a class="mobile-bottom-nav-item ${isHome ? 'active' : ''}" href="index.html">
+        <i data-lucide="home"></i>
+        <span>Home</span>
+      </a>
+      <a class="mobile-bottom-nav-item ${isServices ? 'active' : ''}" href="services.html">
+        <i data-lucide="heart-handshake"></i>
+        <span>Services</span>
+      </a>
+      <a class="mobile-bottom-nav-item ${isQuickHelp || isBooking ? 'active' : ''}" href="quick-help.html">
+        <i data-lucide="plus-circle" style="color: var(--primary); stroke-width: 2.5;"></i>
+        <span style="font-weight: 850;">Book Care</span>
+      </a>
+      <a class="mobile-bottom-nav-item ${isTrack ? 'active' : ''}" href="my-bookings.html">
+        <i data-lucide="calendar"></i>
+        <span>Track</span>
+      </a>
+      <a class="mobile-bottom-nav-item ${isTrust ? 'active' : ''}" href="trust.html">
+        <i data-lucide="shield-check"></i>
+        <span>Trust</span>
+      </a>
+    `;
   }
 }
 
@@ -1504,6 +1537,187 @@ function updateDynamicStats() {
 }
 
 // ----------------------------------------------------
+// 7.8 Mobile Multi-Step Form & Swipers Redesign Logic
+// ----------------------------------------------------
+function initMobileMultiStepForm() {
+  const forms = document.querySelectorAll("#bookingForm, #quickHelpForm");
+  if (forms.length === 0) return;
+
+  forms.forEach(form => {
+    const sections = form.querySelectorAll(".form-section");
+    if (sections.length < 2) return;
+
+    // If screen width > 768px, disable multi-step behaviors
+    if (window.innerWidth > 768) {
+      form.classList.remove("multi-step-active");
+      sections.forEach(sec => sec.classList.remove("step-active"));
+      
+      const progressContainer = form.querySelector(".step-progress-container");
+      if (progressContainer) progressContainer.style.display = "none";
+      
+      const navButtons = form.querySelector(".form-navigation-buttons");
+      if (navButtons) navButtons.style.display = "none";
+      
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.style.removeProperty("display");
+      }
+      return;
+    }
+
+    form.classList.add("multi-step-active");
+
+    // Add progress bar if not exists
+    let progressContainer = form.querySelector(".step-progress-container");
+    if (!progressContainer) {
+      progressContainer = document.createElement("div");
+      progressContainer.className = "step-progress-container";
+      progressContainer.innerHTML = `
+        <div class="step-progress-header">
+          <span class="step-current-text">Step 1 of 3</span>
+          <span class="step-section-title">Patient details</span>
+        </div>
+        <div class="step-progress-bar-bg">
+          <div class="step-progress-bar-fill"></div>
+        </div>
+      `;
+      form.insertBefore(progressContainer, sections[0]);
+    } else {
+      progressContainer.style.display = "block";
+    }
+
+    // Add navigation buttons if not exists
+    let navButtons = form.querySelector(".form-navigation-buttons");
+    if (!navButtons) {
+      navButtons = document.createElement("div");
+      navButtons.className = "form-navigation-buttons";
+      navButtons.innerHTML = `
+        <button type="button" class="btn btn-outline prev-step-btn" style="flex: 1;">Back</button>
+        <button type="button" class="btn btn-primary next-step-btn" style="flex: 1.5;">Next</button>
+      `;
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        form.insertBefore(navButtons, submitBtn);
+      } else {
+        form.appendChild(navButtons);
+      }
+    } else {
+      navButtons.style.display = "flex";
+    }
+
+    let currentStep = 0;
+
+    const updateWizard = () => {
+      sections.forEach((sec, idx) => {
+        if (idx === currentStep) {
+          sec.classList.add("step-active");
+        } else {
+          sec.classList.remove("step-active");
+        }
+      });
+
+      // Update progress bar
+      const fill = progressContainer.querySelector(".step-progress-bar-fill");
+      const currentText = progressContainer.querySelector(".step-current-text");
+      const titleText = progressContainer.querySelector(".step-section-title");
+
+      const pct = ((currentStep + 1) / sections.length) * 100;
+      fill.style.width = `${pct}%`;
+      currentText.textContent = `Step ${currentStep + 1} of ${sections.length}`;
+
+      const activeHeading = sections[currentStep].querySelector("h2");
+      titleText.textContent = activeHeading ? activeHeading.textContent : "";
+
+      // Update button states
+      const prevBtn = navButtons.querySelector(".prev-step-btn");
+      const nextBtn = navButtons.querySelector(".next-step-btn");
+      const submitBtn = form.querySelector('button[type="submit"]');
+
+      if (currentStep === 0) {
+        prevBtn.style.visibility = "hidden";
+      } else {
+        prevBtn.style.visibility = "visible";
+      }
+
+      if (currentStep === sections.length - 1) {
+        nextBtn.style.display = "none";
+        if (submitBtn) {
+          submitBtn.style.setProperty("display", "inline-flex", "important");
+        }
+      } else {
+        nextBtn.style.display = "inline-flex";
+        if (submitBtn) {
+          submitBtn.style.setProperty("display", "none", "important");
+        }
+      }
+    };
+
+    // Initialize first step
+    updateWizard();
+
+    // Event listeners
+    const prevBtn = navButtons.querySelector(".prev-step-btn");
+    const nextBtn = navButtons.querySelector(".next-step-btn");
+
+    // Remove existing event listeners to avoid duplicates
+    const newPrevBtn = prevBtn.cloneNode(true);
+    const newNextBtn = nextBtn.cloneNode(true);
+    prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+    nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
+
+    newPrevBtn.addEventListener("click", () => {
+      if (currentStep > 0) {
+        currentStep--;
+        updateWizard();
+        form.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+
+    newNextBtn.addEventListener("click", () => {
+      const activeSec = sections[currentStep];
+      const fields = activeSec.querySelectorAll("input, select, textarea");
+      let isValid = true;
+
+      // Native HTML5 Validation check before advancing
+      for (const field of fields) {
+        if (!field.checkValidity()) {
+          field.reportValidity();
+          isValid = false;
+          break;
+        }
+      }
+
+      if (isValid) {
+        currentStep++;
+        updateWizard();
+        form.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
+}
+
+function initMobileSwipers() {
+  const swiperSelectors = [
+    ".pricing-grid",
+    ".teaser-grid",
+    ".decision-grid",
+    ".testimonials-section > div[style*='grid-template-columns']",
+    ".coverage-section .grid-3-col"
+  ];
+  
+  swiperSelectors.forEach(selector => {
+    const el = document.querySelector(selector);
+    if (el) {
+      if (window.innerWidth <= 768) {
+        el.classList.add("horizontal-swipe-mobile");
+      } else {
+        el.classList.remove("horizontal-swipe-mobile");
+      }
+    }
+  });
+}
+
+// ----------------------------------------------------
 // 8. Global Feature Bootstrapper
 // ----------------------------------------------------
 function initGlobalFeatures() {
@@ -1513,6 +1727,8 @@ function initGlobalFeatures() {
   initDispatcherStatus();
   initLegalSearch();
   updateDynamicStats();
+  initMobileMultiStepForm();
+  initMobileSwipers();
 
   // Re-initialize Lucide Icons on final generated DOM
   if (window.lucide) {
@@ -1534,6 +1750,12 @@ function initGlobalFeatures() {
     }, 500);
   }
 }
+
+// Re-evaluate layouts on window resize
+window.addEventListener("resize", () => {
+  initMobileMultiStepForm();
+  initMobileSwipers();
+});
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initGlobalFeatures);

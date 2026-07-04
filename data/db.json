@@ -37,6 +37,10 @@
     "ops@caresy.co": {
       "email": "ops@caresy.co",
       "name": "Ops Admin"
+    },
+    "ramesh@example.com": {
+      "email": "ramesh@example.com",
+      "name": "Ramesh Kumar"
     }
   },
   "bookings": [
@@ -216,6 +220,25 @@
         "specialty": "Orthopedics",
         "color": "#e77f62"
       }
+    },
+    {
+      "id": "CRS-9447",
+      "patientName": "Ramesh Kumar",
+      "age": "",
+      "phone": "+919876543210",
+      "email": "ramesh@example.com",
+      "emergency": "+919988777665",
+      "hospital": "Apollo Hospitals",
+      "department": "",
+      "doctor": "",
+      "date": "2026-07-10",
+      "time": "10:30",
+      "language": "No preference",
+      "service": "Hospital Companion",
+      "needs": [],
+      "notes": "",
+      "status": "Request submitted",
+      "createdAt": "2026-07-03T18:01:41.015Z"
     }
   ]
 }
