@@ -445,7 +445,11 @@ const htmlPages = [
   'services',
   'terms',
   'trust',
-  'my-bookings'
+  'my-bookings',
+  'how-it-works',
+  'for-hospitals',
+  'testimonials',
+  'contact'
 ];
 
 htmlPages.forEach(page => {

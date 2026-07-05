@@ -238,7 +238,7 @@ document.querySelectorAll(".main-nav a").forEach((link) => {
       authLink.style.marginLeft = "6px";
       authLink.style.padding = "10px 18px";
       authLink.style.borderRadius = "999px";
-      authLink.style.background = "rgba(29, 113, 105, 0.08)";
+      authLink.style.background = "rgba(231, 163, 62, 0.12)";
       authLink.style.color = "var(--primary)";
       authLink.style.fontWeight = "750";
       authLink.textContent = "Sign In";
@@ -713,7 +713,7 @@ const companionDatabase = {
     verification: "Police Verified",
     lang: "Hindi, English",
     specialty: "Cardiology",
-    color: "#08796f"
+    color: "#E7A33E"
   },
   orthopedics: {
     name: "Anil Kumar",
@@ -723,7 +723,7 @@ const companionDatabase = {
     verification: "Police Verified",
     lang: "Kannada, Tamil, English",
     specialty: "Orthopedics",
-    color: "#e77f62"
+    color: "#E7A33E"
   },
   general: {
     name: "Sarah Mathews",
@@ -733,7 +733,7 @@ const companionDatabase = {
     verification: "Police Verified",
     lang: "Malayalam, Telugu, English",
     specialty: "General Care",
-    color: "#a45b9a"
+    color: "#E7A33E"
   }
 };
 
@@ -867,22 +867,22 @@ if (bookingForm) {
           // G3: Show step-by-step confirmation
           const successHTML = `
             <div class="booking-success-state" style="text-align: center; padding: 40px 20px;">
-              <div style="width: 64px; height: 64px; background: var(--mint); color: var(--primary-dark); border-radius: 50%; display: grid; place-items: center; font-size: 2rem; margin: 0 auto 20px;">✓</div>
+              <div style="width: 64px; height: 64px; background: var(--sage); color: var(--ink-teal); border-radius: 50%; display: grid; place-items: center; font-size: 2rem; margin: 0 auto 20px;">✓</div>
               <h2>Booking Received</h2>
               <p style="font-size: 1.1rem; color: var(--muted); margin-bottom: 30px;">Your reference number is <strong>${booking.id}</strong>.</p>
               
-              <div style="text-align: left; background: var(--surface-2); padding: 20px; border-radius: 16px; margin-bottom: 30px;">
+              <div style="text-align: left; background: var(--sage); color: var(--ink-teal); padding: 20px; border-radius: 16px; margin-bottom: 30px;">
                 <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-                  <span style="color: var(--primary);">1.</span>
-                  <div><strong>Booking received</strong><br><small>We have your details.</small></div>
+                  <span style="color: var(--marigold); font-weight: 800;">1.</span>
+                  <div><strong>Booking received</strong><br><small style="color: var(--muted-teal-gray);">We have your details.</small></div>
                 </div>
                 <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-                  <span style="color: var(--warning);">2.</span>
-                  <div><strong>Operations reviewing</strong><br><small>Verifying hospital and companion availability.</small></div>
+                  <span style="color: var(--marigold); font-weight: 800;">2.</span>
+                  <div><strong>Operations reviewing</strong><br><small style="color: var(--muted-teal-gray);">Verifying hospital and companion availability.</small></div>
                 </div>
                 <div style="display: flex; gap: 12px;">
-                  <span style="color: var(--muted);">3.</span>
-                  <div><strong>Companion assigned</strong><br><small>Profile sent 12 hrs before visit.</small></div>
+                  <span style="color: var(--muted-teal-gray); font-weight: 800;">3.</span>
+                  <div><strong>Companion assigned</strong><br><small style="color: var(--muted-teal-gray);">Profile sent 12 hrs before visit.</small></div>
                 </div>
               </div>
 
@@ -984,7 +984,7 @@ if (quickHelpForm) {
         // Show success state
         quickHelpForm.innerHTML = `
           <div style="text-align: center; padding: 40px 20px;">
-            <div style="width: 64px; height: 64px; background: var(--mint); color: var(--primary-dark); border-radius: 50%; display: grid; place-items: center; font-size: 2rem; margin: 0 auto 20px;">✓</div>
+            <div style="width: 64px; height: 64px; background: var(--sage); color: var(--ink-teal); border-radius: 50%; display: grid; place-items: center; font-size: 2rem; margin: 0 auto 20px;">✓</div>
             <h2 style="margin-bottom: 12px;">Request received.</h2>
             <p style="font-size: 1.1rem; color: var(--muted);">Our dispatcher will call <strong>${phoneVal}</strong> within 6 minutes.</p>
             <p style="font-size: 0.9rem; color: var(--muted); margin-top: 15px;">Your reference number is <strong>${data.booking.id}</strong>.</p>
@@ -1016,7 +1016,7 @@ if (quickHelpForm) {
 
       quickHelpForm.innerHTML = `
         <div style="text-align: center; padding: 40px 20px;">
-          <div style="width: 64px; height: 64px; background: var(--amber); color: var(--ink); border-radius: 50%; display: grid; place-items: center; font-size: 2rem; margin: 0 auto 20px;">✓</div>
+          <div style="width: 64px; height: 64px; background: var(--marigold); color: var(--charcoal); border-radius: 50%; display: grid; place-items: center; font-size: 2rem; margin: 0 auto 20px;">✓</div>
           <h2 style="margin-bottom: 12px;">Saved Offline</h2>
           <p style="font-size: 1.1rem; color: var(--muted);">We saved your request offline. We will attempt to connect and sync once you are back online.</p>
           <p style="font-size: 0.9rem; color: var(--muted); margin-top: 15px;">Your reference number is <strong>${mockBookingId}</strong>.</p>
@@ -1225,36 +1225,56 @@ function injectNavigation() {
     
     const isHome = page === "index.html" || page === "index" || page === "";
     const isServices = page === "services.html" || page === "services";
-    const isTrust = page === "trust.html" || page === "trust";
     const isQuickHelp = page === "quick-help.html" || page === "quick-help";
     const isBooking = page === "booking.html" || page === "booking";
     const isTrack = page === "my-bookings.html" || page === "my-bookings";
     
-    appBar.innerHTML = `
-      <a class="brand" href="index.html" aria-label="Caresy home">
-        <span class="brand-mark">C</span>
-        <span class="brand-text">Caresy</span>
-      </a>
-      <div class="header-actions">
-        <a class="nav-quick ${isQuickHelp ? 'active' : ''}" href="quick-help.html">
-          <span class="desktop-text">Need help today</span>
-          <span class="mobile-text">Need Help</span>
-        </a>
-        <a class="nav-cta ${isBooking ? 'active' : ''}" href="booking.html">
-          <span class="desktop-text">Book for later</span>
-          <span class="mobile-text">Book Later</span>
-        </a>
-      </div>
+    // Header Content
+    let leftControl = `
       <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
         <span></span>
         <span></span>
       </button>
+    `;
+    if (!isHome) {
+      leftControl = `
+        <a href="javascript:history.back()" class="nav-back" aria-label="Go back">
+          <i data-lucide="arrow-left"></i>
+        </a>
+      `;
+    }
+
+    appBar.innerHTML = `
+      ${leftControl}
+      <a class="brand" href="index.html" aria-label="Caresy home">
+        <svg class="brand-icon" viewBox="0 0 24 24" width="22" height="22" fill="var(--marigold)" stroke="none" style="display: inline-block; vertical-align: middle; margin-right: 4px;">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        <span class="brand-text" style="text-transform: lowercase; font-weight: 700; letter-spacing: -0.02em;">caresy</span>
+      </a>
+      <a href="tel:+919876543210" class="header-call-btn" aria-label="Call Caresy">
+        <i data-lucide="phone"></i>
+      </a>
+
       <nav class="main-nav" aria-label="Primary navigation">
-        <a class="${isHome ? 'active' : ''}" href="index.html">Home</a>
-        <a class="${isServices ? 'active' : ''}" href="services.html">Services</a>
-        <a class="${isTrust ? 'active' : ''}" href="trust.html">Trust</a>
-        <a class="nav-quick desktop-only ${isQuickHelp ? 'active' : ''}" href="quick-help.html">Need help today</a>
-        <a class="nav-cta desktop-only ${isBooking ? 'active' : ''}" href="booking.html">Book for later</a>
+        <button class="menu-close-btn" type="button" aria-label="Close menu"><i data-lucide="x"></i></button>
+        <div class="menu-header">
+          <div class="brand-mark-gold">C</div>
+          <div>
+            <strong class="menu-brand-name">caresy</strong>
+            <span class="menu-brand-tagline">Your Care, Our Priority.</span>
+          </div>
+        </div>
+        <a class="${isHome ? 'active' : ''}" href="index.html"><i data-lucide="home"></i> Home</a>
+        <a class="${isServices ? 'active' : ''}" href="services.html"><i data-lucide="heart-handshake"></i> Services</a>
+        <a class="${isTrack ? 'active' : ''}" href="my-bookings.html"><i data-lucide="calendar"></i> Bookings</a>
+        <a class="${page.includes('profile') ? 'active' : ''}" href="my-bookings.html#profile"><i data-lucide="user"></i> Profile</a>
+        <a class="${page.includes('about') ? 'active' : ''}" href="about.html"><i data-lucide="info"></i> About Us</a>
+        <a class="${page.includes('hospitals') ? 'active' : ''}" href="for-hospitals.html"><i data-lucide="building-2"></i> For Hospitals</a>
+        <a class="${page.includes('faq') ? 'active' : ''}" href="faq.html"><i data-lucide="help-circle"></i> FAQs</a>
+        <a class="${page.includes('contact') ? 'active' : ''}" href="contact.html"><i data-lucide="phone"></i> Contact Us</a>
+        <a href="#settings" onclick="alert('Settings page - coming soon!')"><i data-lucide="settings"></i> Settings</a>
+        <a href="#logout" id="sidebarLogoutBtn"><i data-lucide="log-out"></i> Logout</a>
       </nav>
     `;
     
@@ -1266,6 +1286,15 @@ function injectNavigation() {
         toggle.setAttribute("aria-expanded", String(isOpen));
       });
     }
+
+    // Attach close listener
+    const closeBtn = appBar.querySelector(".menu-close-btn");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        document.body.classList.remove("nav-open");
+        toggle?.setAttribute("aria-expanded", "false");
+      });
+    }
     
     appBar.querySelectorAll(".main-nav a").forEach((link) => {
       link.addEventListener("click", () => {
@@ -1274,11 +1303,15 @@ function injectNavigation() {
       });
     });
 
-    // Re-run header auth widget
-    if (window.updateHeaderAuth) {
-      window.updateHeaderAuth();
+    const logoutBtn = appBar.querySelector("#sidebarLogoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (window.logoutUser) window.logoutUser();
+        else alert('Logged out successfully.');
+      });
     }
-    
+
     // Inject mobile bottom nav dynamically if not present
     let bottomNav = document.querySelector(".mobile-bottom-nav");
     if (!bottomNav) {
@@ -1297,19 +1330,25 @@ function injectNavigation() {
         <i data-lucide="heart-handshake"></i>
         <span>Services</span>
       </a>
-      <a class="mobile-bottom-nav-item ${isQuickHelp || isBooking ? 'active' : ''}" href="quick-help.html">
-        <i data-lucide="plus-circle" style="color: var(--primary); stroke-width: 2.5;"></i>
-        <span style="font-weight: 850;">Book Care</span>
-      </a>
-      <a class="mobile-bottom-nav-item ${isTrack ? 'active' : ''}" href="my-bookings.html">
+      <a class="mobile-bottom-nav-item ${isTrack || isBooking || isQuickHelp ? 'active' : ''}" href="my-bookings.html">
         <i data-lucide="calendar"></i>
-        <span>Track</span>
+        <span>Bookings</span>
       </a>
-      <a class="mobile-bottom-nav-item ${isTrust ? 'active' : ''}" href="trust.html">
-        <i data-lucide="shield-check"></i>
-        <span>Trust</span>
+      <a class="mobile-bottom-nav-item" href="my-bookings.html#profile">
+        <i data-lucide="user"></i>
+        <span>Profile</span>
       </a>
     `;
+
+    // Render Lucide icons
+    if (window.lucide) {
+      window.lucide.createIcons({
+        nodeList: appBar.querySelectorAll('[data-lucide]')
+      });
+      window.lucide.createIcons({
+        nodeList: bottomNav.querySelectorAll('[data-lucide]')
+      });
+    }
   }
 }
 
@@ -1717,6 +1756,106 @@ function initMobileSwipers() {
   });
 }
 
+function initMobileAccordions() {
+  const isMobile = window.innerWidth <= 768;
+  
+  // 1. Services Page Accordion
+  const servicesMain = document.querySelector(".services-page-main");
+  if (servicesMain) {
+    let accordionWrapper = document.getElementById("servicesMobileAccordion");
+    
+    if (isMobile) {
+      if (!accordionWrapper) {
+        accordionWrapper = document.createElement("details");
+        accordionWrapper.id = "servicesMobileAccordion";
+        accordionWrapper.className = "mobile-accordion-details";
+        accordionWrapper.innerHTML = `
+          <summary class="mobile-accordion-summary">
+            <span>Additional Details & Coverage</span>
+            <i data-lucide="chevron-down"></i>
+          </summary>
+          <div class="mobile-accordion-content"></div>
+        `;
+        
+        const bottomCta = servicesMain.querySelector(".bottom-cta");
+        servicesMain.insertBefore(accordionWrapper, bottomCta);
+        
+        const sectionsToMove = [
+          servicesMain.querySelector(".coverage-section"),
+          servicesMain.querySelector(".dos-donts-section"),
+          servicesMain.querySelector(".services-faq-summary"),
+          servicesMain.querySelector(".compare-band")
+        ];
+        
+        const contentDiv = accordionWrapper.querySelector(".mobile-accordion-content");
+        sectionsToMove.forEach(sec => {
+          if (sec) contentDiv.appendChild(sec);
+        });
+        
+        if (window.lucide) window.lucide.createIcons();
+      }
+    } else {
+      if (accordionWrapper) {
+        const bottomCta = servicesMain.querySelector(".bottom-cta");
+        const contentDiv = accordionWrapper.querySelector(".mobile-accordion-content");
+        while (contentDiv.firstChild) {
+          servicesMain.insertBefore(contentDiv.firstChild, bottomCta);
+        }
+        accordionWrapper.remove();
+      }
+    }
+  }
+
+  // 2. Home Page Accordion
+  const homeMain = document.querySelector("#main-content");
+  const isHomePage = homeMain && !homeMain.classList.contains("page") && homeMain.querySelector(".home-hero");
+  if (isHomePage) {
+    let homeAccordion = document.getElementById("homeMobileAccordion");
+    
+    if (isMobile) {
+      if (!homeAccordion) {
+        homeAccordion = document.createElement("details");
+        homeAccordion.id = "homeMobileAccordion";
+        homeAccordion.className = "mobile-accordion-details";
+        homeAccordion.innerHTML = `
+          <summary class="mobile-accordion-summary">
+            <span>How Caresy Works & Safety Protocols</span>
+            <i data-lucide="chevron-down"></i>
+          </summary>
+          <div class="mobile-accordion-content"></div>
+        `;
+        
+        const testimonials = homeMain.querySelector(".testimonials-section");
+        homeMain.insertBefore(homeAccordion, testimonials);
+        
+        // Find direct visual showcase sections
+        const showcases = Array.from(homeMain.children).filter(child => child.classList.contains("visual-showcase-section"));
+        const sectionsToMove = [
+          ...showcases,
+          homeMain.querySelector(".service-teaser"),
+          homeMain.querySelector(".home-emergency")
+        ];
+        
+        const contentDiv = homeAccordion.querySelector(".mobile-accordion-content");
+        sectionsToMove.forEach(sec => {
+          if (sec) contentDiv.appendChild(sec);
+        });
+        
+        if (window.lucide) window.lucide.createIcons();
+      }
+    } else {
+      if (homeAccordion) {
+        const testimonials = homeMain.querySelector(".testimonials-section");
+        const contentDiv = homeAccordion.querySelector(".mobile-accordion-content");
+        while (contentDiv.firstChild) {
+          homeMain.insertBefore(contentDiv.firstChild, testimonials);
+        }
+        homeAccordion.remove();
+      }
+    }
+  }
+}
+
 // ----------------------------------------------------
 // 8. Global Feature Bootstrapper
 // ----------------------------------------------------
@@ -1729,6 +1868,7 @@ function initGlobalFeatures() {
   updateDynamicStats();
   initMobileMultiStepForm();
   initMobileSwipers();
+  initMobileAccordions();
 
   // Re-initialize Lucide Icons on final generated DOM
   if (window.lucide) {
@@ -1755,6 +1895,7 @@ function initGlobalFeatures() {
 window.addEventListener("resize", () => {
   initMobileMultiStepForm();
   initMobileSwipers();
+  initMobileAccordions();
 });
 
 if (document.readyState === "loading") {

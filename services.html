@@ -1,330 +1,113 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Caresy services for hospital visits, appointments, documents, queues, prescriptions, and medicine collection." />
-    <title>Caresy | Services</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
-  
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%2308796f%22>C</text></svg>">
-    <script src="https://unpkg.com/lucide@latest"></script>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Caresy services for hospital visits, appointments, documents, queues, prescriptions, and medicine collection." />
+  <title>Caresy | Our Services</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%23E7A33E%22>C</text></svg>">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-  <body>
-    <a href="#main-content" class="sr-only focus:not-sr-only" style="position:absolute; left:-9999px;">Skip to content</a>
-    <header class="app-bar"></header>
 
-    <main class="page" id="main-content">
-      <section class="page-hero reveal">
-        <div style="display: flex; gap: 40px; align-items: center; flex-wrap: wrap;">
-          <div style="flex: 1.2; min-width: 280px;">
-            <p class="eyebrow">Services</p>
-            <h1>Practical help through the hospital visit.</h1>
-            <p>Caresy is built for families who need a reliable human presence around appointments, tests, paperwork, and updates.</p>
-          </div>
-          <div style="flex: 0.8; min-width: 280px;">
-            <img src="assets/caresy-hospital-support.png" alt="Caresy companion supporting patient in a wheelchair at the hospital" style="border-radius: var(--radius); box-shadow: var(--shadow-1); width: 100%; max-height: 220px; object-fit: cover;" />
-          </div>
-        </div>
-      </section>
+<body>
+  <a href="#main-content" class="sr-only focus:not-sr-only" style="position:absolute; left:-9999px;">Skip to content</a>
+  <header class="app-bar"></header>
 
-      <section class="section service-page-grid">
-        <article class="material-card reveal" id="service-1">
-          <i data-lucide="user" class="service-icon" style="color: var(--primary); width: 32px; height: 32px; margin-bottom: 12px; display: block;"></i>
-          <h2>Hospital Companion</h2>
-          <p>Presence with the patient during hospital visits, registration, movement between departments, and appointment coordination.</p>
-        </article>
-        <article class="material-card reveal delay-1" id="service-2">
-          <i data-lucide="calendar" class="service-icon" style="color: var(--primary); width: 32px; height: 32px; margin-bottom: 12px; display: block;"></i>
-          <h2>Appointment Assistance</h2>
-          <p>Help with doctor details, appointment time, department navigation, queue token handling, and form submission.</p>
-        </article>
-        <article class="material-card reveal delay-2" id="service-3">
-          <i data-lucide="file-text" class="service-icon" style="color: var(--primary); width: 32px; height: 32px; margin-bottom: 12px; display: block;"></i>
-          <h2>Document Assistance</h2>
-          <p>Prescription photos, reports, bills, discharge papers, invoices, and visit notes organized for family review.</p>
-        </article>
-        <article class="material-card reveal">
-          <i data-lucide="pill" class="service-icon" style="color: var(--primary); width: 32px; height: 32px; margin-bottom: 12px; display: block;"></i>
-          <h2>Medicine Collection</h2>
-          <p>Medicine purchase support when included, bill upload, medicine photo, and clear handover after collection.</p>
-        </article>
-        <article class="material-card reveal delay-1">
-          <i data-lucide="users" class="service-icon" style="color: var(--primary); width: 32px; height: 32px; margin-bottom: 12px; display: block;"></i>
-          <h2>Queue Management</h2>
-          <p>Support at registration counters, waiting areas, billing counters, labs, and hospital desks.</p>
-        </article>
-        <article class="material-card muted-card reveal delay-2" style="opacity: 0.7; position: relative;">
-          <span style="position: absolute; top: 16px; right: 16px; background: var(--line); color: var(--muted); padding: 4px 10px; border-radius: 99px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase;">Coming Soon</span>
-          <i data-lucide="moon" class="service-icon" style="color: var(--muted); width: 32px; height: 32px; margin-bottom: 12px; display: block;"></i>
-          <h2>Overnight Hospital Companion</h2>
-          <p>Planned future service for overnight hospital stays and post-surgery observation.</p>
-        </article>
-      </section>
+  <main id="main-content" style="padding-top: 80px; padding-bottom: 80px; max-width: 600px; margin: 0 auto;">
+    
+    <!-- Title Section -->
+    <section class="services-header-section" style="padding: 20px 16px; text-align: center;">
+      <h1 style="font-size: 2.2rem; font-weight: 700; color: var(--charcoal); margin-bottom: 12px; line-height: 1.25;">
+        Our Services
+      </h1>
+      <p style="font-size: 0.95rem; color: var(--muted-teal-gray); margin-bottom: 24px; line-height: 1.6; max-width: 480px; margin-left: auto; margin-right: auto;">
+        Comprehensive support designed to make hospital visits stress-free.
+      </p>
+    </section>
 
-      <section class="section pricing-section reveal" id="pricing">
-        <div class="section-title" style="text-align: center; margin-bottom: 48px;">
-          <p class="section-kicker">Simple, Transparent Pricing</p>
-          <h2>No hidden fees. Pay only for the care you need.</h2>
-          <p style="margin: 0 auto; max-width: 600px;">All plans include our core verification, live updates, and central operations tracking.</p>
-        </div>
-        <div class="pricing-grid">
-          <div class="pricing-card material-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
-            <div>
-              <span class="pricing-tag" style="background: rgba(8, 121, 111, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase;">Standard</span>
-              <h3 style="font-size: 1.5rem; margin: 12px 0 6px;">Hospital Companion</h3>
-              <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 20px;">Ideal for regular checkups, consultation navigation, and basic queueing support.</p>
-              <div class="price-value" style="font-size: 2.2rem; font-weight: 800; color: var(--ink); margin-bottom: 20px;">
-                ₹499<span style="font-size: 0.9rem; font-weight: 400; color: var(--muted);"> / visit (up to 4 hours)</span>
-              </div>
-              <ul style="padding-left: 20px; font-size: 0.9rem; color: var(--muted); line-height: 1.6; margin-bottom: 24px;">
-                <li>Full navigation inside hospital</li>
-                <li>Live timeline updates for family</li>
-                <li>Prescription and notes collection</li>
-                <li>Wait in queues and token collection</li>
-              </ul>
-            </div>
-            <a class="btn btn-primary full" href="booking.html">Book Standard</a>
-          </div>
-
-          <div class="pricing-card material-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; border-color: var(--primary); box-shadow: var(--shadow-2); position: relative;">
-            <span class="popular-badge" style="position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; padding: 4px 12px; border-radius: 999px; font-size: 0.72rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; z-index: 2;">Most Popular</span>
-            <div>
-              <span class="pricing-tag" style="background: rgba(231, 127, 98, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; margin-top: 12px; display: inline-block;">Transit Support</span>
-              <h3 style="font-size: 1.5rem; margin: 12px 0 6px;">Companion + Pickup</h3>
-              <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 20px;">Best for elderly patients needing door-to-door transit help alongside hospital care.</p>
-              <div class="price-value" style="font-size: 2.2rem; font-weight: 800; color: var(--ink); margin-bottom: 20px;">
-                ₹899<span style="font-size: 0.9rem; font-weight: 400; color: var(--muted);"> / visit (up to 4 hours)</span>
-              </div>
-              <ul style="padding-left: 20px; font-size: 0.9rem; color: var(--muted); line-height: 1.6; margin-bottom: 24px;">
-                <li>Companion picks up patient from home</li>
-                <li>Travel coordination via Auto/Cab</li>
-                <li>Complete hospital companion support</li>
-                <li>Accompaniment back home after discharge</li>
-              </ul>
-            </div>
-            <a class="btn btn-primary full" href="booking.html">Book Transit</a>
-          </div>
-
-          <div class="pricing-card material-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
-            <div>
-              <span class="pricing-tag" style="background: rgba(89, 8, 121, 0.1); color: purple; padding: 4px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase;">Extended Care</span>
-              <h3 style="font-size: 1.5rem; margin: 12px 0 6px;">Full Day Companion</h3>
-              <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 20px;">For complex diagnostic procedures, surgeries, or multiple department visits.</p>
-              <div class="price-value" style="font-size: 2.2rem; font-weight: 800; color: var(--ink); margin-bottom: 20px;">
-                ₹1,299<span style="font-size: 0.9rem; font-weight: 400; color: var(--muted);"> / visit (up to 8 hours)</span>
-              </div>
-              <ul style="padding-left: 20px; font-size: 0.9rem; color: var(--muted); line-height: 1.6; margin-bottom: 24px;">
-                <li>Extended 8-hour dedicated support</li>
-                <li>Multi-department / diagnostics navigation</li>
-                <li>Lunch/refreshment assistance</li>
-                <li>Detailed final report summary</li>
-              </ul>
-            </div>
-            <a class="btn btn-primary full" href="booking.html">Book Full Day</a>
-          </div>
-        </div>
-      </section>
-
-      <section class="section coverage-section reveal" style="padding-top: 40px; padding-bottom: 40px;">
-        <div class="material-card" style="background: rgba(231, 243, 237, 0.6); display: flex; flex-direction: column; gap: 14px;">
-          <span class="coverage-badge" style="background: var(--primary); color: #fff; padding: 4px 12px; border-radius: 99px; font-size: 0.72rem; font-weight: 900; text-transform: uppercase; width: max-content; letter-spacing: 0.05em;">Coverage Area</span>
-          <h2>Active Metro Areas & Network Hospitals</h2>
-          <p>
-            Caresy companions are currently deployed and operating in <strong>Bengaluru, Chennai, and Hyderabad</strong>. We coordinate care across all major private and public healthcare systems.
-          </p>
-          <div class="grid-3-col" style="margin-top: 10px;">
-            <div>
-              <strong style="color: var(--primary-dark);">Bengaluru</strong>
-              <p style="font-size: 0.88rem; margin: 4px 0 0; line-height: 1.45;">Apollo Jayanagar/BG Road, Fortis, Manipal Hospital (Old Airport Road, Hebbal), Narayana Health, Aster CMI.</p>
-            </div>
-            <div>
-              <strong style="color: var(--primary-dark);">Chennai</strong>
-              <p style="font-size: 0.88rem; margin: 4px 0 0; line-height: 1.45;">Apollo Greams Road/OMR, MGM Healthcare, Fortis Malar, MIOT International, Sri Ramachandra Medical Centre.</p>
-            </div>
-            <div>
-              <strong style="color: var(--primary-dark);">Hyderabad</strong>
-              <p style="font-size: 0.88rem; margin: 4px 0 0; line-height: 1.45;">Apollo Jubilee Hills, Care Hospitals, Yashoda Hospitals (Somajiguda, Secunderabad), KIMS, AIG Hospitals.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section services-faq-summary reveal" style="padding-top: 40px; padding-bottom: 40px;">
-        <div style="text-align: center;">
-          <h2>Have questions about cancellations, late arrivals, or boundaries?</h2>
-          <p style="max-width: 600px; margin: 10px auto 24px;">We've gathered complete answers regarding our service rules, backup companion protocols, and satisfaction guarantees.</p>
-          <a class="btn btn-outline" href="faq.html">View FAQs & Policy Details &rarr;</a>
-        </div>
-      </section>
-
+    <!-- Services List Section -->
+    <section class="services-list-section" style="padding: 0 16px 30px; display: flex; flex-direction: column; gap: 16px;">
       
-    
-      <section class="section dos-donts-section reveal" style="padding-top: 60px; padding-bottom: 60px; max-width: 900px; margin: 0 auto;">
-        <div class="section-title" style="text-align: center; margin-bottom: 40px;">
-          <h2>Clear Boundaries</h2>
-          <p>What Caresy Companions Do and Don't Do</p>
+      <!-- Card 1 -->
+      <div class="service-card" style="display: flex; gap: 16px; align-items: start; padding: 20px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-1);">
+        <div style="display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--marigold); color: var(--ink-teal); flex-shrink: 0;">
+          <i data-lucide="file-text" style="width: 20px; height: 20px;"></i>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-          <div class="material-card" style="border-top: 4px solid var(--primary);">
-            <h3 style="color: var(--primary-dark); margin-bottom: 20px; display: flex; align-items: center; gap: 8px;"><i data-lucide="check-circle" style="color: var(--primary);"></i> What We Do</h3>
-            <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px;">
-              <li style="display: flex; gap: 8px; align-items: start;"><i data-lucide="check" style="color: var(--primary); flex-shrink: 0; width: 18px; margin-top: 2px;"></i> Wait in hospital queues (billing, pharmacy)</li>
-              <li style="display: flex; gap: 8px; align-items: start;"><i data-lucide="check" style="color: var(--primary); flex-shrink: 0; width: 18px; margin-top: 2px;"></i> Push wheelchairs and aid walking</li>
-              <li style="display: flex; gap: 8px; align-items: start;"><i data-lucide="check" style="color: var(--primary); flex-shrink: 0; width: 18px; margin-top: 2px;"></i> Take notes during doctor consultations</li>
-              <li style="display: flex; gap: 8px; align-items: start;"><i data-lucide="check" style="color: var(--primary); flex-shrink: 0; width: 18px; margin-top: 2px;"></i> Post live updates to the family app</li>
-              <li style="display: flex; gap: 8px; align-items: start;"><i data-lucide="check" style="color: var(--primary); flex-shrink: 0; width: 18px; margin-top: 2px;"></i> Provide friendly emotional support</li>
-            </ul>
-          </div>
-          <div class="material-card" style="border-top: 4px solid var(--coral);">
-            <h3 style="color: var(--coral); margin-bottom: 20px; display: flex; align-items: center; gap: 8px;"><i data-lucide="x-circle" style="color: var(--coral);"></i> What We Don't Do</h3>
-            <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px;">
-              <li style="display: flex; gap: 8px; align-items: start;"><i data-lucide="x" style="color: var(--coral); flex-shrink: 0; width: 18px; margin-top: 2px;"></i> Give medical or dosage advice</li>
-              <li style="display: flex; gap: 8px; align-items: start;"><i data-lucide="x" style="color: var(--coral); flex-shrink: 0; width: 18px; margin-top: 2px;"></i> Administer injections or IV lines</li>
-              <li style="display: flex; gap: 8px; align-items: start;"><i data-lucide="x" style="color: var(--coral); flex-shrink: 0; width: 18px; margin-top: 2px;"></i> Lift non-ambulatory patients</li>
-              <li style="display: flex; gap: 8px; align-items: start;"><i data-lucide="x" style="color: var(--coral); flex-shrink: 0; width: 18px; margin-top: 2px;"></i> Make clinical decisions</li>
-              <li style="display: flex; gap: 8px; align-items: start;"><i data-lucide="x" style="color: var(--coral); flex-shrink: 0; width: 18px; margin-top: 2px;"></i> Drive patients in private vehicles</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="section compare-band reveal" style="text-align: center; margin-top: 60px; padding: 40px 24px;">
-        <div style="margin-bottom: 24px;">
-          <p class="eyebrow" style="color: var(--primary); font-weight: 800;">Positioning</p>
-          <h2>Caresy is not telemedicine, nursing, ambulance, or medical advice.</h2>
-          <p style="color: var(--muted); max-width: 600px; margin: 8px auto 0;">We provide physical presence, logistics, and communication support to keep your family coordinated.</p>
-        </div>
-        <div class="pill-list" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; max-width: 800px; margin: 0 auto;">
-          <span class="tag-pill">Presence</span>
-          <span class="tag-pill">Assistance</span>
-          <span class="tag-pill">Coordination</span>
-          <span class="tag-pill">Communication</span>
-          <span class="tag-pill">Documentation</span>
-          <span class="tag-pill">Empathy</span>
-          <span class="tag-pill">Reliability</span>
-        </div>
-      </section>
-      <section class="section bottom-cta reveal" style="text-align: center; padding: 80px 24px; background: var(--primary-dark); color: #fff; margin-top: 60px;">
-        <h2 style="font-size: 2.4rem; margin-bottom: 16px; color: #fff;">Ready to book a companion?</h2>
-        <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto;">Our operations desk is live. Book for an upcoming appointment or request urgent same-day help.</p>
-        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-          <a class="btn btn-secondary" href="booking.html">Schedule Visit</a>
-          <a class="btn btn-glass" href="quick-help.html" style="color: #fff; border-color: rgba(255,255,255,0.3);">Need Same-Day Help</a>
-        </div>
-      </section>
-
-</main>
-
-    
-    
-    
-    
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-brand">
-          <a class="brand" href="index.html" aria-label="Caresy home">
-      <span class="brand-mark">C</span>
-      <span style="margin-left: 6px;">Caresy</span>
-    </a>
-          <p class="footer-desc">
-            Trusted hospital companions for elderly and vulnerable patients in India. We bridge the gap when families cannot be physically present.
+        <div>
+          <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--charcoal); margin: 0 0 6px;">Hospital Assistance</h2>
+          <p style="font-size: 0.88rem; color: var(--muted-teal-gray); line-height: 1.5; margin: 0;">
+            We help with paperwork, appointments, medicine pickup, queue management and waiting room comfort.
           </p>
-          <div class="footer-badges">
-            <div class="footer-badge">
-              <i data-lucide="shield"></i>
-              <span>Police Verified Companions</span>
-            </div>
-            <div class="footer-badge">
-              <i data-lucide="check-circle"></i>
-              <span>AuthBridge Secured</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="footer-links">
-          <div class="footer-col">
-            <h4>Company</h4>
-            <a href="about.html">About Us</a>
-            <a href="services.html">Our Services</a>
-            <a href="trust.html">Trust Framework</a>
-            <a href="faq.html">FAQs & Coverage</a>
-          </div>
-          <div class="footer-col">
-            <h4>Need Care?</h4>
-            <a href="quick-help.html">Same-Day Help</a>
-            <a href="booking.html">Schedule Visit</a>
-            <a href="my-bookings.html">My Bookings</a>
-          </div>
-          <div class="footer-col">
-            <h4>Legal</h4>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Service</a>
-          </div>
-        </div>
-
-        <div class="footer-newsletter">
-          <h4>Stay Connected</h4>
-          <p>Get tips and guides on caring for aging family members.</p>
-          <form class="footer-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing!');">
-            <input type="email" placeholder="Email address" required />
-            <button type="submit" aria-label="Subscribe">
-              <i data-lucide="send"></i>
-            </button>
-          </form>
-          <div class="footer-socials">
-            <a href="https://wa.me/919717500225" target="_blank" rel="noopener" aria-label="WhatsApp">
-              <i data-lucide="message-circle"></i> WhatsApp
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">
-              <i data-lucide="linkedin"></i>
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter">
-              <i data-lucide="twitter"></i>
-            </a>
-          </div>
         </div>
       </div>
-      
-      <div class="footer-bottom">
-        <div class="footer-bottom-container">
-          <p class="copyright">&copy; 2026 Caresy Care Services Pvt. Ltd. All rights reserved.</p>
-          <div class="footer-bottom-links">
-            <span class="footer-address-mini">4th Floor, Sector 7, HSR Layout, Bengaluru, KA 560102</span>
-            <span class="footer-divider">|</span>
-            <a href="tel:+919717500225">+91 97175 00225</a>
-            <span class="footer-divider">|</span>
-            <a href="mailto:support@caresy.co">support@caresy.co</a>
-          </div>
+
+      <!-- Card 2 -->
+      <div class="service-card" style="display: flex; gap: 16px; align-items: start; padding: 20px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-1);">
+        <div style="display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--marigold); color: var(--ink-teal); flex-shrink: 0;">
+          <i data-lucide="car" style="width: 20px; height: 20px;"></i>
+        </div>
+        <div>
+          <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--charcoal); margin: 0 0 6px;">Pick-up & Drop</h2>
+          <p style="font-size: 0.88rem; color: var(--muted-teal-gray); line-height: 1.5; margin: 0;">
+            Safe and reliable pickup and drop services for patients and their attendants.
+          </p>
         </div>
       </div>
-    </footer>
 
+      <!-- Card 3 -->
+      <div class="service-card" style="display: flex; gap: 16px; align-items: start; padding: 20px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-1);">
+        <div style="display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--marigold); color: var(--ink-teal); flex-shrink: 0;">
+          <i data-lucide="user" style="width: 20px; height: 20px;"></i>
+        </div>
+        <div>
+          <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--charcoal); margin: 0 0 6px;">Elderly Care Companion</h2>
+          <p style="font-size: 0.88rem; color: var(--muted-teal-gray); line-height: 1.5; margin: 0;">
+            Compassionate companionship and assistance for elderly during hospital visits.
+          </p>
+        </div>
+      </div>
 
+      <!-- Card 4 -->
+      <div class="service-card" style="display: flex; gap: 16px; align-items: start; padding: 20px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-1);">
+        <div style="display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--marigold); color: var(--ink-teal); flex-shrink: 0;">
+          <i data-lucide="shield" style="width: 20px; height: 20px;"></i>
+        </div>
+        <div>
+          <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--charcoal); margin: 0 0 6px;">Full-day Concierge</h2>
+          <p style="font-size: 0.88rem; color: var(--muted-teal-gray); line-height: 1.5; margin: 0;">
+            Complete day-long support so you don't have to worry about a thing.
+          </p>
+        </div>
+      </div>
 
+    </section>
 
+    <!-- Bottom CTA Button Section -->
+    <section class="services-action-section" style="padding: 0 16px 40px; text-align: center;">
+      <a href="booking.html" class="btn btn-primary" style="width: 100%; max-width: 320px; font-size: 1.05rem; padding: 16px;">
+        Book a Service
+      </a>
+    </section>
 
-    <!-- Floating WhatsApp Widget -->
-    <a class="whatsapp-float" href="https://wa.me/919717500225" target="_blank" rel="noopener" aria-label="Chat with Caresy on WhatsApp">
-      <svg class="whatsapp-icon" viewBox="0 0 24 24" width="24" height="24">
-        <path fill="#fff" d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 0 0 1.333 4.993L2 22l5.13-1.347a9.96 9.96 0 0 0 4.887 1.282h.005c5.502 0 9.985-4.479 9.986-9.985 0-2.67-1.04-5.18-2.93-7.071A9.9 9.9 0 0 0 12.012 2zm5.726 14.126c-.314.885-1.536 1.636-2.122 1.768-.586.13-1.173.23-3.793-.83-3.354-1.356-5.503-4.757-5.671-4.982-.168-.223-1.35-1.79-1.35-3.42 0-1.628.85-2.43 1.15-2.76.3-.332.65-.415.87-.415.22 0 .43.01.62.01.2 0 .46-.08.72.55.27.65.91 2.22.99 2.38.08.17.13.36.01.58-.11.23-.25.37-.37.52-.13.15-.27.3-.39.45-.14.16-.29.34-.12.63.17.29.74 1.23 1.59 1.98.1.09.2.18.3.26.85.76 1.57.99 1.87 1.14.3.15.47.12.65-.08.18-.2.78-.9 1-1.2.22-.3.43-.25.72-.14.3.11 1.88.89 2.2 1.05.32.16.54.24.62.38.08.14.08.82-.24 1.7z"/>
-      </svg>
-      <span>WhatsApp Help</span>
-    </a>
+  </main>
 
-    <script src="script.js"></script>
-  
+  <footer class="footer"></footer>
 
+  <script src="script.js"></script>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        if(window.lucide) {
-          window.lucide.createIcons();
-        }
-      });
-    </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if(window.lucide) {
+        window.lucide.createIcons();
+      }
+    });
+  </script>
 </body>
+
 </html>
